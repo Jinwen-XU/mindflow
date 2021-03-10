@@ -1,0 +1,206 @@
+% \iffalse meta-comment
+%
+% Copyright (C) 2021 by Jinwen XU 
+% -------------------------------
+% 
+% This file may be distributed and/or modified under the conditions of the LaTeX
+% Project Public License, either version 1.3 of this license or (at your option)
+% any later version. The latest version of this license is in:
+%
+%    http://www.latex-project.org/lppl.txt
+%
+% and version 1.3 or later is part of all distributions of LaTeX version
+% 2005/12/01 or later.
+%
+% \fi
+%
+% \iffalse
+%<*driver>
+\ProvidesFile{mindflow.dtx}
+%</driver>
+%<package>\NeedsTeXFormat{LaTeX2e}
+%<package>\ProvidesPackage{mindflow}
+%<*package>
+    [2021/03/09 Mindflow environment]
+%</package>
+%
+%<*driver>
+\documentclass{article}
+\usepackage{doc}
+\usepackage[a4paper,margin=1.8in]{geometry}
+\usepackage{titling}
+\setlength{\droptitle}{-.5in}
+\usepackage[linenumber,rightmarker]{mindflow}
+\usepackage{enumitem}
+\setlist{noitemsep}
+\usepackage{newpxtext}
+\usepackage{parskip}
+\EnableCrossrefs
+\CodelineIndex
+\RecordChanges
+\begin{document}
+  \DocInput{mindflow.dtx}
+\end{document}
+%</driver>
+% \fi
+%
+% \CheckSum{104}
+%
+% \GetFileInfo{mindflow.dtx}
+%
+%
+% \title{The {\normalfont\textsf{mindflow}} package}
+% \author{\scshape Jinwen Xu}
+% \date{\filedate}
+%
+% \maketitle
+%
+% \section{Introduction}
+%
+% The \textsf{mindflow} package provides you a way to write your ideas,
+% annotations or writing plans. For example (with option
+% \verb|linenumber| and \verb|rightmarker|):
+% \begin{mindflow}
+%     What to write next:
+%     \begin{itemize}
+%         \item usage;
+%         \item some internal macros;
+%         \item the complete code.
+%     \end{itemize}
+% \end{mindflow}
+%
+% \section{Usage}
+%
+% Simply load the package with \verb|\usepackage{mindflow}|. By default
+% it has no line numbers or markers. You can use the following options:
+%
+% \begin{tabular}{ll}
+%     \verb|linenumber| & Enable line numbers\\
+%     \verb|leftmarker| & Enable left marker, by default it is a ``\verb|*|''\\
+%     \verb|rightmarker| & Enable right marker, by default it is a ``\verb|*|''\\
+%     \verb|off| & Hide all the \verb|mindflow| environments
+% \end{tabular}
+%
+% \DescribeEnv{mindflow}
+% Then you can use the mindflow environment as
+% \begin{verbatim}
+%   \begin{mindflow}
+%       ...
+%   \end{mindflow}
+% \end{verbatim}
+%
+% \section{Some technical details}
+%
+% \DescribeMacro{\mindflowFont}
+% \DescribeMacro{\mindflowNumFont}
+% The font for texts and line numbers within the \verb|mindflow|
+% environments can be specified by redefining \verb|\mindflowFont| and
+% \verb|\mindflowNumFont|. By default they are defined as:
+% \begin{verbatim}
+%   \newcommand{\mindflowFont}{\normalfont\footnotesize}
+%   \newcommand{\mindflowNumFont}{\normalfont\scriptsize\ttfamily}
+% \end{verbatim}
+% \DescribeMacro{\mindflowLeft}
+% \DescribeMacro{\mindflowRight}
+% The left and right marker can be changed by redefining
+% \verb|\mindflowLeft| and \verb|\mindflowRight|. Both have the default
+% value as ``\verb|*|''.
+%
+% And finally, the color of \verb|mindflow| environments is called
+% \verb|mindflow|. By default, it is the current text color with opacity
+% 30\%.
+%
+% \StopEventually{}
+%
+% \section{Implementation}
+% Below is the complete source code of this package.
+%
+%    \begin{macrocode}
+\RequirePackage{kvoptions}
+\SetupKeyvalOptions{%
+    family = @mindflow,
+    prefix = @mindflow@
+}
+\DeclareBoolOption[false]{off}           % Turn off mindflow
+\DeclareBoolOption[false]{leftmarker}    % Left marker
+\DeclareBoolOption[false]{rightmarker}   % Right marker
+\DeclareBoolOption[false]{linenumber}    % Line numbers
+
+\ProcessKeyvalOptions*\relax
+
+%%================================
+%% Initialization
+%%================================
+\newcommand{\mindflowFont}{\normalfont\footnotesize}
+\newcommand{\mindflowNumFont}{\normalfont\scriptsize\ttfamily}
+
+\RequirePackage{lineno}
+\RequirePackage{xcolor}
+
+\colorlet{mfSavedColor}{.}
+\colorlet{mindflow}{mfSavedColor!30}
+
+\newcommand{\mindflowLeft}{%
+  \if@mindflow@leftmarker%
+    {*}%
+  \fi%
+}
+\newcommand{\mindflowRight}{%
+  \if@mindflow@rightmarker%
+    {*}%
+  \fi%
+}
+
+%%================================
+%% The mindflow environment
+%%================================
+\newif\ifLNturnsON
+
+\newcommand*{\mfSepLine}{%
+  \parskip=0pt
+  \LNturnsONfalse%
+  \ifLineNumbers\LNturnsONtrue\fi\nolinenumbers%
+  \par\noindent\nopagebreak%
+  \makebox[\linewidth]{\rule{\paperwidth}{0.4pt}}%
+  \nopagebreak\par%
+  \ifLNturnsON\linenumbers\fi%
+}
+
+\newcounter{recordLN}
+\newcounter{mfLN}
+\setcounter{mfLN}{1}
+
+\if@mindflow@off
+  \RequirePackage{verbatim}
+  \let\mindflow=\comment
+  \let\endmindflow=\endcomment
+\else
+  \newenvironment{mindflow}
+  {%
+    \setcounter{recordLN}{\value{linenumber}}
+    \setcounter{linenumber}{\value{mfLN}}
+    \LNturnsONfalse%
+    \ifLineNumbers\LNturnsONtrue\fi\nolinenumbers%
+    \mindflowFont\color{mindflow}%
+    \mfSepLine%
+    \linenumbers%
+    \renewcommand\makeLineNumber{%
+      \hss\color{mindflow!25}%
+      \if@mindflow@linenumber%
+      \mindflowNumFont\LineNumber~%
+      \fi%
+      \mindflowLeft\hspace{1em}\rlap{\hskip\textwidth\hspace{1em}\mindflowRight}%
+    }%
+  }
+  {%
+    \par%
+    \vspace{-.5\baselineskip}\mfSepLine%
+    \ifLNturnsON\linenumbers\fi%
+    \setcounter{mfLN}{\value{linenumber}}
+    \setcounter{linenumber}{\value{recordLN}}
+  }
+\fi
+%    \end{macrocode}
+%
+% \Finale
+\endinput
