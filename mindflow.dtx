@@ -18,7 +18,7 @@
 %<package>\NeedsTeXFormat{LaTeX2e}
 %<package>\ProvidesPackage{mindflow}
 %<*package>
-    [2021/03/11 Mindflow environment]
+    [2021/03/12 Mindflow environment]
 %</package>
 %
 %<*driver>
@@ -42,7 +42,7 @@
 %</driver>
 % \fi
 %
-% \CheckSum{119}
+% \CheckSum{125}
 %
 % \GetFileInfo{mindflow.dtx}
 %
@@ -111,6 +111,10 @@
 % \verb|\mindflowLeft| and \verb|\mindflowRight|. Both have the default
 % value as ``\verb|*|''.
 %
+% \DescribeMacro{\mindflowLineHeight}
+% The height of the separation line is a length macro named \verb|\mindflowLineHeight|, 
+% with default value \verb|0.4pt|. You can change this with \verb|\setlength|.
+%
 % And finally, the color for texts and line numbers within the \verb|mindflow|
 % environments are called \verb|mindflowText| and \verb|mindflowNum|,
 % respectively. By default, they have the same color as the context, with
@@ -119,23 +123,25 @@
 % \section{An example}
 % With option \verb|linenumber, leftmarker, rightmarker| and the following settings:
 % \begin{verbatim}
-% \colorlet{mindflowText}{blue!50!cyan}
-% \colorlet{mindflowNum}{blue!50!cyan}
-% \renewcommand{\mindflowTextFont}{\footnotesize\sffamily}
-% \renewcommand{\mindflowNumFont}{\footnotesize\sffamily}
+% \colorlet{mindflowText}{blue!50!cyan!80}
+% \colorlet{mindflowNum}{blue!50!cyan!80}
+% \renewcommand{\mindflowTextFont}{\normalfont\footnotesize\sffamily\itshape}
+% \renewcommand{\mindflowNumFont}{\normalfont\footnotesize\sffamily}
 % \renewcommand{\mindflowLeft}{\hspace{1em}\(\succ\)}
 % \renewcommand{\mindflowRight}{\(\prec\)}
+% \setlength{\mindflowLineHeight}{1pt}
 % \end{verbatim}
 % One gets:
 % \makeatletter
 % \@mindflow@leftmarkertrue
 % \makeatother
-% \colorlet{mindflowText}{blue!50!cyan}
-% \colorlet{mindflowNum}{blue!50!cyan}
-% \renewcommand{\mindflowTextFont}{\footnotesize\sffamily}
-% \renewcommand{\mindflowNumFont}{\footnotesize\sffamily}
+% \colorlet{mindflowText}{blue!50!cyan!80}
+% \colorlet{mindflowNum}{blue!50!cyan!80}
+% \renewcommand{\mindflowTextFont}{\normalfont\footnotesize\sffamily\itshape}
+% \renewcommand{\mindflowNumFont}{\normalfont\footnotesize\sffamily}
 % \renewcommand{\mindflowLeft}{\hspace{1em}\(\succ\)}
 % \renewcommand{\mindflowRight}{\(\prec\)}
+% \setlength{\mindflowLineHeight}{1pt}
 % \begin{mindflow}
 %     \blindtext
 % \end{mindflow}
@@ -178,6 +184,8 @@
 \newcommand{\mindflowNumFont}{\normalfont\scriptsize\ttfamily}
 \newcommand{\mindflowLeft}{*}
 \newcommand{\mindflowRight}{*}
+\newlength{\mindflowLineHeight}
+\setlength{\mindflowLineHeight}{0.4pt}
 
 %%================================
 %% The mindflow environment
@@ -190,9 +198,9 @@
   \ifLineNumbers\LNturnsONtrue\fi\nolinenumbers%
   \par\noindent\nopagebreak%
   \if@mindflow@incolumn%
-    \makebox[\linewidth]{\rule{\linewidth}{0.4pt}}%
+    \makebox[\linewidth]{\rule{\linewidth}{\mindflowLineHeight}}%
   \else%
-    \hspace*{-\paperwidth}\makebox[\linewidth]{\rule{4\paperwidth}{0.4pt}}%
+    \hspace*{-\paperwidth}\makebox[\linewidth]{\rule{4\paperwidth}{\mindflowLineHeight}}%
   \fi%
   \nopagebreak\par%
   \ifLNturnsON\linenumbers\fi%
@@ -209,8 +217,8 @@
 \else
   \newenvironment{mindflow}
   {%
-    \setcounter{recordLN}{\value{linenumber}}
-    \setcounter{linenumber}{\value{mfLN}}
+    \setcounter{recordLN}{\value{linenumber}}%
+    \setcounter{linenumber}{\value{mfLN}}%
     \LNturnsONfalse%
     \ifLineNumbers\LNturnsONtrue\fi\nolinenumbers%
     \mindflowTextFont\color{mindflowText}%
@@ -233,8 +241,8 @@
     \par%
     \vspace{-.5\baselineskip}\mfSepLine%
     \ifLNturnsON\linenumbers\fi%
-    \setcounter{mfLN}{\value{linenumber}}
-    \setcounter{linenumber}{\value{recordLN}}
+    \setcounter{mfLN}{\value{linenumber}}%
+    \setcounter{linenumber}{\value{recordLN}}%
   }
 \fi
 %    \end{macrocode}
