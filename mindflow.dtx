@@ -18,15 +18,16 @@
 %<package>\NeedsTeXFormat{LaTeX2e}
 %<package>\ProvidesPackage{mindflow}
 %<*package>
-    [2021/03/12 Mindflow environment]
+    [2021/03/17 Mindflow environment]
 %</package>
 %
 %<*driver>
 \documentclass{article}
 \usepackage{doc}
-\usepackage[a4paper,top=1.2in,bottom=1.2in,left=1.5in,right=1.2in]{geometry}
+\usepackage[a4paper,top=1.2in,bottom=1.2in,left=1.6in,right=1.2in]{geometry}
 \usepackage{titling}
 \setlength{\droptitle}{-.5in}
+\PassOptionsToPackage{mathlines}{lineno}
 \usepackage[linenumber,rightmarker]{mindflow}
 \usepackage{enumitem}
 \setlist{noitemsep}
@@ -42,7 +43,7 @@
 %</driver>
 % \fi
 %
-% \CheckSum{125}
+% \CheckSum{186}
 %
 % \GetFileInfo{mindflow.dtx}
 %
@@ -55,11 +56,9 @@
 %
 % \section{Introduction}
 %
-% The \textsf{mindflow} package provides you a way to write your ideas,
-% annotations or writing plans. 
-
-% For example (with option
-% \verb|linenumber| and \verb|rightmarker|):
+% The \textsf{mindflow} package provides you a way to write your ideas 
+% and annotations clearly. For exmaple, with the options
+% \verb|linenumber| and \verb|rightmarker|, you will get:
 % \begin{mindflow}
 %     What to write next:
 %     \begin{itemize}
@@ -69,14 +68,15 @@
 %         \item the complete code.
 %     \end{itemize}
 % \end{mindflow}
-% You can also add line numbers to the other part of your document in the usual way.
-% Line numbers within the \textsf{mindflow} environments are independent from
-% those of the main text.
 %
 % \section{Usage}
 %
-% Simply load the package with \verb|\usepackage{mindflow}|. By default
-% it has no line numbers or markers. You can use the following options:
+% Simply load the package with 
+% \begin{verbatim}
+%   \usepackage{mindflow}
+% \end{verbatim}
+% \vspace{-.5\baselineskip}
+% By default, it has no line numbers or markers. You can use the following options:
 %
 % \begin{tabular}{ll}
 %     \verb|linenumber| & Enable line numbers\\
@@ -87,58 +87,106 @@
 % \end{tabular}
 %
 % \DescribeEnv{mindflow}
-% Then you can use the mindflow environment as
+% Then you can use the \verb|mindflow| environment as
 % \begin{verbatim}
 %   \begin{mindflow}
 %       ...
 %   \end{mindflow}
 % \end{verbatim}
 %
-% \section{Some technical details}
+% \linenumbers
+%
+% You can also add line numbers to the other part of your document in the usual
+% way. For example, line numbers have been turned on for this paragraph with
+% \verb|\linenumbers|.
+%
+% \begin{mindflow}
+%   Line numbers within the \textsf{mindflow} environments are independent from
+%   those of the main text.
+% \end{mindflow}
+% (\emph{I recommend that you put an empty line before and after the mindflow 
+% environments. This way, your paragraph structure won't get changed when you 
+% use the }\verb|off|\emph{ option.})
+%
+% \nolinenumbers
+%
+% The feature of line numbering is provided by the package \textsf{lineno}. You
+% can read its documentation to learn more about it. Notice that, by default,
+% displayed equations are not numbered. You can add the following line before
+% \verb|\usepackage{mindflow}|:\\[.5\baselineskip]
+% \null\hspace{1.5em}{\small\verb|\PassOptionsToPackage{mathlines}{lineno}|}\\[.5\baselineskip]
+% to enable the line numbers for displayed equations.
+%
+% \begin{mindflow}\vspace{-\baselineskip}
+% \begin{align*}
+%     (a + b)^2  &= a^2 + 2ab + b^2\\
+%     (a + b)^3  &= a^3 + 3a^2b + 3ab^2 + b^3
+% \end{align*}
+% \end{mindflow}
+%
+%
+% \section{Some \TeX{}nical details}
 %
 % \DescribeMacro{\mindflowTextFont}
 % \DescribeMacro{\mindflowNumFont}
-% The font for texts and line numbers within the \verb|mindflow|
-% environments can be specified by redefining \verb|\mindflowTextFont| and
-% \verb|\mindflowNumFont|. By default they are defined as:
+% The font for text, line numbers and markers within the \verb|mindflow|
+% environments can be specified by redefining \verb|\mindflowTextFont|,
+% \verb|\mindflowNumFont| and \verb|\mindflowMarkerFont|. By default, 
+% they are defined as:
 % \begin{verbatim}
 %   \newcommand{\mindflowTextFont}{\normalfont\footnotesize}
 %   \newcommand{\mindflowNumFont}{\normalfont\scriptsize\ttfamily}
+%   \newcommand{\mindflowMarkerFont}{\normalfont\scriptsize\ttfamily}
 % \end{verbatim}
+% \vspace{-.5\baselineskip}
+%
 % \DescribeMacro{\mindflowLeft}
 % \DescribeMacro{\mindflowRight}
-% The left and right marker can be changed by redefining
+% The left and right markers can be changed by redefining
 % \verb|\mindflowLeft| and \verb|\mindflowRight|. Both have the default
 % value as ``\verb|*|''.
 %
 % \DescribeMacro{\mindflowLineHeight}
-% The height of the separation line is a length macro named \verb|\mindflowLineHeight|, 
+% The height of the separation lines is a length macro named \verb|\mindflowLineHeight|, 
 % with default value \verb|0.4pt|. You can change this with \verb|\setlength|.
 %
-% And finally, the color for texts and line numbers within the \verb|mindflow|
-% environments are called \verb|mindflowText| and \verb|mindflowNum|,
-% respectively. By default, they have the same color as the context, with
-% opacity 30\% and 8\%, respectively. 
-
+% \DescribeMacro{mindflowLine}
+% \DescribeMacro{mindflowText}
+% \DescribeMacro{mindflowNum}
+% \DescribeMacro{mindflowMarker}
+% And finally, the colors for the separation lines, text, line numbers and
+% markers within the \verb|mindflow| environments are called
+% \verb|mindflowLine|, \verb|mindflowText|, \verb|mindflowNum| and
+% \verb|mindflowMarker|, respectively. By default, they have the same color as
+% the context, with opacity 30\% for the separation lines, text and markers, and
+% 8\% for the line numbers. 
+%
 % \section{An example}
 % With option \verb|linenumber, leftmarker, rightmarker| and the following settings:
 % \begin{verbatim}
-% \colorlet{mindflowText}{blue!50!cyan!80}
-% \colorlet{mindflowNum}{blue!50!cyan!80}
+% \colorlet{mindflowLine}{green!50!black}
+% \colorlet{mindflowText}{blue!50!cyan}
+% \colorlet{mindflowNum}{red!50!orange}
+% \colorlet{mindflowMarker}{orange}
 % \renewcommand{\mindflowTextFont}{\normalfont\footnotesize\sffamily\itshape}
-% \renewcommand{\mindflowNumFont}{\normalfont\footnotesize\sffamily}
+% \renewcommand{\mindflowNumFont}{\normalfont\small\footnotesize\sffamily}
+% \renewcommand{\mindflowMarkerFont}{\normalfont\footnotesize\sffamily}
 % \renewcommand{\mindflowLeft}{\hspace{1em}\(\succ\)}
 % \renewcommand{\mindflowRight}{\(\prec\)}
 % \setlength{\mindflowLineHeight}{1pt}
 % \end{verbatim}
+% \vspace{-.5\baselineskip}
 % One gets:
 % \makeatletter
 % \@mindflow@leftmarkertrue
 % \makeatother
-% \colorlet{mindflowText}{blue!50!cyan!80}
-% \colorlet{mindflowNum}{blue!50!cyan!80}
+% \colorlet{mindflowLine}{green!50!black}
+% \colorlet{mindflowText}{blue!50!cyan}
+% \colorlet{mindflowNum}{red!50!orange}
+% \colorlet{mindflowMarker}{orange}
 % \renewcommand{\mindflowTextFont}{\normalfont\footnotesize\sffamily\itshape}
-% \renewcommand{\mindflowNumFont}{\normalfont\footnotesize\sffamily}
+% \renewcommand{\mindflowNumFont}{\normalfont\small\footnotesize\sffamily}
+% \renewcommand{\mindflowMarkerFont}{\normalfont\footnotesize\sffamily}
 % \renewcommand{\mindflowLeft}{\hspace{1em}\(\succ\)}
 % \renewcommand{\mindflowRight}{\(\prec\)}
 % \setlength{\mindflowLineHeight}{1pt}
@@ -177,11 +225,14 @@
 \RequirePackage{xcolor}
 
 \colorlet{mfSavedColor}{.}
+\colorlet{mindflowLine}{mfSavedColor!30}
 \colorlet{mindflowText}{mfSavedColor!30}
+\colorlet{mindflowMarker}{mfSavedColor!30}
 \colorlet{mindflowNum}{mfSavedColor!8}
 
 \newcommand{\mindflowTextFont}{\normalfont\footnotesize}
 \newcommand{\mindflowNumFont}{\normalfont\scriptsize\ttfamily}
+\newcommand{\mindflowMarkerFont}{\normalfont\scriptsize\ttfamily}
 \newcommand{\mindflowLeft}{*}
 \newcommand{\mindflowRight}{*}
 \newlength{\mindflowLineHeight}
@@ -221,16 +272,17 @@
     \setcounter{linenumber}{\value{mfLN}}%
     \LNturnsONfalse%
     \ifLineNumbers\LNturnsONtrue\fi\nolinenumbers%
+    \color{mindflowLine}\mfSepLine%
     \mindflowTextFont\color{mindflowText}%
-    \mfSepLine%
     \linenumbers%
     \renewcommand\makeLineNumber{%
-      \hss\color{mindflowNum}%
+      \hss%
       \if@mindflow@linenumber%
-        \mindflowNumFont\LineNumber~%
+        \mindflowNumFont\color{mindflowNum}\LineNumber\hspace{1em}%
       \fi%
+      \color{mindflowMarker}%
       \if@mindflow@leftmarker%
-        \mindflowLeft\hspace{1em}%
+        \mindflowMarkerFont\mindflowLeft\hspace{1em}%
       \fi%
       \if@mindflow@rightmarker%
         \rlap{\hskip\textwidth\hspace{1em}\mindflowRight}%
@@ -239,11 +291,40 @@
   }
   {%
     \par%
-    \vspace{-.5\baselineskip}\mfSepLine%
+    \vspace{-.5\baselineskip}\color{mindflowLine}\mfSepLine%
     \ifLNturnsON\linenumbers\fi%
     \setcounter{mfLN}{\value{linenumber}}%
     \setcounter{linenumber}{\value{recordLN}}%
   }
+\fi
+
+\ifdefined\linenomathpatch\else
+  \RequirePackage{amsmath}
+  \RequirePackage{etoolbox}
+  \newcommand*\linenomathpatch[1]{%
+    \cspreto{#1}{\linenomath}%
+    \cspreto{#1*}{\linenomath}%
+    \cspreto{end#1}{\endlinenomath}%
+    \cspreto{end#1*}{\endlinenomath}%
+  }
+  \newcommand*\linenomathpatchAMS[1]{%
+    \cspreto{#1}{\linenomathAMS}%
+    \cspreto{#1*}{\linenomathAMS}%
+    \csappto{end#1}{\endlinenomath}%
+    \csappto{end#1*}{\endlinenomath}%
+  }
+  \expandafter\ifx\linenomath\linenomathWithnumbers
+    \let\linenomathAMS\linenomathWithnumbers
+    \patchcmd\linenomathAMS{\advance\postdisplaypenalty\linenopenalty}{}{}{}
+  \else
+    \let\linenomathAMS\linenomathNonumbers
+  \fi
+  \linenomathpatch{equation}
+  \linenomathpatchAMS{gather}
+  \linenomathpatchAMS{multline}
+  \linenomathpatchAMS{align}
+  \linenomathpatchAMS{alignat}
+  \linenomathpatchAMS{flalign}
 \fi
 %    \end{macrocode}
 %
