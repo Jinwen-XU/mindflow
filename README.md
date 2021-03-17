@@ -1,15 +1,10 @@
 <!-- Copyright (C) 2021 by Jinwen XU -->
 
-[Github](https://github.com/Jinwen-XU/mindflow) | [CTAN](https://ctan.org/pkg/mindflow) | [Download](https://github.com/Jinwen-XU/mindflow/releases)
-
-![License](https://img.shields.io/ctan/l/mindflow.svg) ![CTAN Version](https://img.shields.io/ctan/v/mindflow.svg) ![Github Version](https://img.shields.io/github/release/Jinwen-XU/mindflow.svg) ![Repo Size](https://img.shields.io/github/repo-size/Jinwen-XU/mindflow.svg)
-
----
-
 # The mindflow package
 
-This package provides an environment that is separated from the main text and
-has its own line numbers, for writing ideas or annotations.
+`mindflow` is a LaTeX package that allows you to write your ideas and annotations in a clear way.
+
+More specifically, it provides a LaTeX environment with its own line numbers or markers, which can be well distinguished from the main text.
 
 # License
 
