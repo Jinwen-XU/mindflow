@@ -18,7 +18,7 @@
 %<package>\NeedsTeXFormat{LaTeX2e}
 %<package>\ProvidesPackage{mindflow}
 %<*package>
-    [2021/03/17 Mindflow environment]
+    [2021/04/05 Mindflow environment]
 %</package>
 %
 %<*driver>
@@ -86,7 +86,7 @@
 %     \verb|off| & Hide all the \verb|mindflow| environments
 % \end{tabular}
 %
-% \DescribeEnv{mindflow}
+% \DescribeEnv{\{mindflow\}}
 % Then you can use the \verb|mindflow| environment as
 % \begin{verbatim}
 %   \begin{mindflow}
@@ -304,8 +304,8 @@
   \newcommand*\linenomathpatch[1]{%
     \cspreto{#1}{\linenomath}%
     \cspreto{#1*}{\linenomath}%
-    \cspreto{end#1}{\endlinenomath}%
-    \cspreto{end#1*}{\endlinenomath}%
+    \csappto{end#1}{\endlinenomath}%
+    \csappto{end#1*}{\endlinenomath}%
   }
   \newcommand*\linenomathpatchAMS[1]{%
     \cspreto{#1}{\linenomathAMS}%
