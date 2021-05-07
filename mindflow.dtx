@@ -18,20 +18,24 @@
 %<package>\NeedsTeXFormat{LaTeX2e}
 %<package>\ProvidesPackage{mindflow}
 %<*package>
-    [2021/04/05 Mindflow environment]
+    [2021/05/07 Mindflow environment]
 %</package>
 %
 %<*driver>
 \documentclass{article}
 \usepackage{doc}
 \usepackage[a4paper,top=1.2in,bottom=1.2in,left=1.6in,right=1.2in]{geometry}
+\usepackage{titlesec}
+\titleformat{\section}{\large\scshape\centering}{\thesection.}{.5em}{}
+\titleformat{\subsection}{\large}{\thesubsection}{.5em}{}
 \usepackage{titling}
 \setlength{\droptitle}{-.5in}
-\PassOptionsToPackage{mathlines}{lineno}
-\usepackage[linenumber,rightmarker]{mindflow}
 \usepackage{enumitem}
 \setlist{noitemsep}
-\usepackage{newpxtext}
+\usepackage{mathpazo,newpxtext}
+\useosf
+\PassOptionsToPackage{mathlines}{lineno}
+\usepackage[linenumber,rightmarker]{mindflow}
 \usepackage{blindtext}
 \usepackage{parskip}
 \EnableCrossrefs
@@ -43,7 +47,7 @@
 %</driver>
 % \fi
 %
-% \CheckSum{186}
+% \CheckSum{197}
 %
 % \GetFileInfo{mindflow.dtx}
 %
@@ -71,15 +75,22 @@
 %
 % \section{Usage}
 %
+% \subsection{Initialization}
 % Simply load the package with 
 % \begin{verbatim}
 %   \usepackage{mindflow}
 % \end{verbatim}
-% \vspace{-.5\baselineskip}
-% By default, it has no line numbers or markers. You can use the following options:
+%
+% \vspace{-\baselineskip}
+% There are a few options available, which are listed in the next subsection.
+%
+% \subsection{Options}
+% By default, the environment has no line numbers or markers. You can use the following options:
 %
 % \begin{tabular}{ll}
-%     \verb|linenumber| & Enable line numbers\\
+%     \verb|linenumber| & Same as \verb|leftlinenumber|\\
+%     \verb|leftlinenumber| & Enable left line numbers\\
+%     \verb|rightlinenumber| & Enable right line numbers\\
 %     \verb|leftmarker| & Enable left marker, by default it is a ``\verb|*|''\\
 %     \verb|rightmarker| & Enable right marker, by default it is a ``\verb|*|''\\
 %     \verb|incolumn| or \verb|twocolumn| & The separation line would fit in the column \\&(\emph{automatically applied in two-column documents})\\
@@ -93,7 +104,9 @@
 %       ...
 %   \end{mindflow}
 % \end{verbatim}
+% \vspace{-\baselineskip}
 %
+% \subsection{About the line numbers}
 % \linenumbers
 %
 % You can also add line numbers to the other part of your document in the usual
@@ -104,9 +117,10 @@
 %   Line numbers within the \textsf{mindflow} environments are independent from
 %   those of the main text.
 % \end{mindflow}
-% (\emph{I recommend that you put an empty line before and after the mindflow 
-% environments. This way, your paragraph structure won't get changed when you 
-% use the }\verb|off|\emph{ option.})
+% (\emph{I recommend that you put an empty line before and after the mindflow
+% environments, i.e.~make the \emph{\textsf{mindflow}} environment a paragraph
+% of its own. This way, your paragraph structure won't get changed when you use
+% the} \verb|off|\emph{ option.})
 %
 % \nolinenumbers
 %
@@ -162,33 +176,35 @@
 % 8\% for the line numbers. 
 %
 % \section{An example}
-% With option \verb|linenumber, leftmarker, rightmarker| and the following settings:
+% With option \verb|leftlinenumber, rightlinenumber, leftmarker, rightmarker| and the 
+% following settings:
 % \begin{verbatim}
 % \colorlet{mindflowLine}{green!50!black}
 % \colorlet{mindflowText}{blue!50!cyan}
 % \colorlet{mindflowNum}{red!50!orange}
 % \colorlet{mindflowMarker}{orange}
 % \renewcommand{\mindflowTextFont}{\normalfont\footnotesize\sffamily\itshape}
-% \renewcommand{\mindflowNumFont}{\normalfont\small\footnotesize\sffamily}
+% \renewcommand{\mindflowNumFont}{\normalfont\small\footnotesize\ttfamily}
 % \renewcommand{\mindflowMarkerFont}{\normalfont\footnotesize\sffamily}
 % \renewcommand{\mindflowLeft}{\hspace{1em}\(\succ\)}
-% \renewcommand{\mindflowRight}{\(\prec\)}
+% \renewcommand{\mindflowRight}{\(\prec\)\hspace{1em}}
 % \setlength{\mindflowLineHeight}{1pt}
 % \end{verbatim}
 % \vspace{-.5\baselineskip}
 % One gets:
 % \makeatletter
 % \@mindflow@leftmarkertrue
+% \@mindflow@rightlinenumbertrue
 % \makeatother
 % \colorlet{mindflowLine}{green!50!black}
 % \colorlet{mindflowText}{blue!50!cyan}
 % \colorlet{mindflowNum}{red!50!orange}
 % \colorlet{mindflowMarker}{orange}
 % \renewcommand{\mindflowTextFont}{\normalfont\footnotesize\sffamily\itshape}
-% \renewcommand{\mindflowNumFont}{\normalfont\small\footnotesize\sffamily}
+% \renewcommand{\mindflowNumFont}{\normalfont\small\footnotesize\ttfamily}
 % \renewcommand{\mindflowMarkerFont}{\normalfont\footnotesize\sffamily}
 % \renewcommand{\mindflowLeft}{\hspace{1em}\(\succ\)}
-% \renewcommand{\mindflowRight}{\(\prec\)}
+% \renewcommand{\mindflowRight}{\(\prec\)\hspace{1em}}
 % \setlength{\mindflowLineHeight}{1pt}
 % \begin{mindflow}
 %     \blindtext
@@ -205,17 +221,22 @@
     family = @mindflow,
     prefix = @mindflow@
 }
-\DeclareBoolOption[false]{off}           % Turn off mindflow
-\DeclareBoolOption[false]{leftmarker}    % Left marker
-\DeclareBoolOption[false]{rightmarker}   % Right marker
-\DeclareBoolOption[false]{linenumber}    % Line numbers
-\DeclareBoolOption[false]{twocolumn}     % Two column
-\DeclareBoolOption[false]{incolumn}      % Separation line fits in the column
+\DeclareBoolOption[false]{off}              % Turn off mindflow
+\DeclareBoolOption[false]{leftmarker}       % Left marker
+\DeclareBoolOption[false]{rightmarker}      % Right marker
+\DeclareBoolOption[false]{linenumber}       % Left line numbers
+\DeclareBoolOption[false]{leftlinenumber}   % Left line numbers
+\DeclareBoolOption[false]{rightlinenumber}  % Right line numbers
+\DeclareBoolOption[false]{twocolumn}        % Two column
+\DeclareBoolOption[false]{incolumn}         % Separation line fits in the column
 
 \ProcessKeyvalOptions*\relax
 
 \if@mindflow@twocolumn
   \@mindflow@incolumntrue
+\fi
+\if@mindflow@linenumber
+  \@mindflow@leftlinenumbertrue
 \fi
 
 %%================================
@@ -242,7 +263,6 @@
 %% The mindflow environment
 %%================================
 \newif\ifLNturnsON
-
 \newcommand*{\mfSepLine}{%
   \parskip=0pt
   \LNturnsONfalse%
@@ -251,7 +271,8 @@
   \if@mindflow@incolumn%
     \makebox[\linewidth]{\rule{\linewidth}{\mindflowLineHeight}}%
   \else%
-    \hspace*{-\paperwidth}\makebox[\linewidth]{\rule{4\paperwidth}{\mindflowLineHeight}}%
+    \hspace*{-\paperwidth}%
+    \makebox[\linewidth]{\rule{4\paperwidth}{\mindflowLineHeight}}%
   \fi%
   \nopagebreak\par%
   \ifLNturnsON\linenumbers\fi%
@@ -277,16 +298,22 @@
     \linenumbers%
     \renewcommand\makeLineNumber{%
       \hss%
-      \if@mindflow@linenumber%
+      \if@mindflow@leftlinenumber%
         \mindflowNumFont\color{mindflowNum}\LineNumber\hspace{1em}%
       \fi%
       \color{mindflowMarker}%
       \if@mindflow@leftmarker%
         \mindflowMarkerFont\mindflowLeft\hspace{1em}%
       \fi%
-      \if@mindflow@rightmarker%
-        \rlap{\hskip\textwidth\hspace{1em}\mindflowRight}%
-      \fi%
+      \rlap{\hskip\textwidth%
+        \if@mindflow@rightmarker%
+          \hspace{1em}\mindflowRight%
+        \fi%
+        \if@mindflow@rightlinenumber%
+          \hspace{1em}%
+          \mindflowNumFont\color{mindflowNum}\LineNumber%
+        \fi%
+      }%
     }%
   }
   {%
