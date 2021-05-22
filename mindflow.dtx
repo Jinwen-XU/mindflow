@@ -18,7 +18,7 @@
 %<package>\NeedsTeXFormat{LaTeX2e}
 %<package>\ProvidesPackage{mindflow}
 %<*package>
-    [2021/05/07 Mindflow environment]
+    [2021/05/23 mindflow environment]
 %</package>
 %
 %<*driver>
@@ -27,7 +27,7 @@
 \usepackage[a4paper,top=1.2in,bottom=1.2in,left=1.6in,right=1.2in]{geometry}
 \usepackage{titlesec}
 \titleformat{\section}{\large\scshape\centering}{\thesection.}{.5em}{}
-\titleformat{\subsection}{\large}{\thesubsection}{.5em}{}
+\titleformat{\subsection}{\large\itshape}{\thesubsection}{.5em}{}
 \usepackage{titling}
 \setlength{\droptitle}{-.5in}
 \usepackage{enumitem}
@@ -38,6 +38,40 @@
 \usepackage[linenumber,rightmarker]{mindflow}
 \usepackage{blindtext}
 \usepackage{parskip}
+\usepackage{listings}
+\definecolor{maintheme}{RGB}{50,100,150}
+\definecolor{forestgreen}{RGB}{21,122,81}
+\definecolor{lightergray}{gray}{0.99}
+\lstset{language=[LaTeX]TeX,
+    keywordstyle=\color{maintheme},
+    basicstyle=\ttfamily,
+    commentstyle=\color{forestgreen}\ttfamily,
+    stringstyle=\rmfamily,
+    showstringspaces=false,
+    breaklines=true,
+    frame=lines,
+    backgroundcolor=\color{lightergray},
+    flexiblecolumns=true,
+    escapeinside={(*}{*)},
+    % numbers=left,
+    % numberstyle=\scriptsize, stepnumber=1, numbersep=5pt,
+    % firstnumber=last,
+} 
+\providecommand{\meta}[1]{$\langle${\normalfont\itshape#1}$\rangle$}
+\lstset{moretexcs=%
+    {linenumbers,nolinenumbers,mindflowLeft,mindflowRight,mindflowTextFont,mindflowNumFont,mindflowMarkerFont,mindflowLineHeight,setlength,colorlet,color,
+    RequirePackage,SetupKeyvalOptions,DeclareBoolOption,ProcessKeyvalOptions,PassOptionsToPackage,
+    if@mindflow@twocolumn,@mindflow@incolumntrue,if@mindflow@linenumber,@mindflow@leftlinenumbertrue,if@mindflow@off,if@mindflow@incolumn,if@mindflow@leftlinenumber,if@mindflow@rightlinenumber,if@mindflow@leftmarker,if@mindflow@rightmarker,
+    ifLNturnsON,LNturnsONtrue,LNturnsONfalse,ifLineNumbers,
+    mindflow,endmindflow,comment,endcomment,
+    mfSepLine,makeLineNumber,LineNumber,
+    ifdefined,linenomathpatch,cspreto,csappto,patchcmd,linenomathpatchAMS,linenomathAMS,linenomathWithnumbers,linenomath,endlinenomath,linenomathNonumbers,linenopenalty
+    }
+}
+\lstnewenvironment{code*}% 
+{\setkeys{lst}{columns=fullflexible,keepspaces=true}}{}
+\lstnewenvironment{code}% 
+{\setkeys{lst}{columns=fullflexible,keepspaces=true,numbers=left,numberstyle=\scriptsize, stepnumber=1, numbersep=5pt,lastline=137}}{}
 \EnableCrossrefs
 \CodelineIndex
 \RecordChanges
@@ -47,12 +81,12 @@
 %</driver>
 % \fi
 %
-% \CheckSum{197}
+% \CheckSum{0}
 %
 % \GetFileInfo{mindflow.dtx}
 %
 %
-% \title{The {\normalfont\textsf{mindflow}} package}
+% \title{{\normalfont\textsf{mindflow}}, write your ideas in a clear way}
 % \author{\scshape Jinwen Xu}
 % \date{\filedate}
 %
@@ -77,11 +111,17 @@
 %
 % \subsection{Initialization}
 % Simply load the package with 
-% \begin{verbatim}
-%   \usepackage{mindflow}
-% \end{verbatim}
+% \iffalse
+%<*example>
+% \fi
+\begin{code*}
+  \usepackage{mindflow}
+\end{code*}
+% \iffalse
+%</example>
+% \fi
 %
-% \vspace{-\baselineskip}
+% \vspace{-.5\baselineskip}
 % There are a few options available, which are listed in the next subsection.
 %
 % \subsection{Options}
@@ -99,19 +139,24 @@
 %
 % \DescribeEnv{\{mindflow\}}
 % Then you can use the \verb|mindflow| environment as
-% \begin{verbatim}
-%   \begin{mindflow}
-%       ...
-%   \end{mindflow}
-% \end{verbatim}
-% \vspace{-\baselineskip}
+% \iffalse
+%<*example>
+% \fi
+\begin{code*}
+  \begin{mindflow}
+      (*\meta{text}*)
+  \end{mindflow}
+\end{code*}
+% \iffalse
+%</example>
+% \fi
 %
 % \subsection{About the line numbers}
 % \linenumbers
 %
 % You can also add line numbers to the other part of your document in the usual
 % way. For example, line numbers have been turned on for this paragraph with
-% \verb|\linenumbers|.
+% \lstinline|\linenumbers|.
 %
 % \begin{mindflow}
 %   Line numbers within the \textsf{mindflow} environments are independent from
@@ -127,8 +172,17 @@
 % The feature of line numbering is provided by the package \textsf{lineno}. You
 % can read its documentation to learn more about it. Notice that, by default,
 % displayed equations are not numbered. You can add the following line before
-% \verb|\usepackage{mindflow}|:\\[.5\baselineskip]
-% \null\hspace{1.5em}{\small\verb|\PassOptionsToPackage{mathlines}{lineno}|}\\[.5\baselineskip]
+% \lstinline|\usepackage{mindflow}|:
+% \iffalse
+%<*example>
+% \fi
+\begin{code*}
+  \PassOptionsToPackage{mathlines}{lineno}
+\end{code*}
+% \iffalse
+%</example>
+% \fi
+% \vspace{-.5\baselineskip}
 % to enable the line numbers for displayed equations.
 %
 % \begin{mindflow}\vspace{-\baselineskip}
@@ -143,26 +197,33 @@
 %
 % \DescribeMacro{\mindflowTextFont}
 % \DescribeMacro{\mindflowNumFont}
+% \DescribeMacro{\mindflowMarkerFont}
 % The font for text, line numbers and markers within the \verb|mindflow|
-% environments can be specified by redefining \verb|\mindflowTextFont|,
-% \verb|\mindflowNumFont| and \verb|\mindflowMarkerFont|. By default, 
+% environments can be specified by redefining \lstinline|\mindflowTextFont|,
+% \lstinline|\mindflowNumFont| and \lstinline|\mindflowMarkerFont|. By default, 
 % they are defined as:
-% \begin{verbatim}
-%   \newcommand{\mindflowTextFont}{\normalfont\footnotesize}
-%   \newcommand{\mindflowNumFont}{\normalfont\scriptsize\ttfamily}
-%   \newcommand{\mindflowMarkerFont}{\normalfont\scriptsize\ttfamily}
-% \end{verbatim}
+% \iffalse
+%<*example>
+% \fi
+\begin{code*}
+\newcommand{\mindflowTextFont}{\normalfont\footnotesize}
+\newcommand{\mindflowNumFont}{\normalfont\scriptsize\ttfamily}
+\newcommand{\mindflowMarkerFont}{\normalfont\scriptsize\ttfamily}
+\end{code*}
+% \iffalse
+%</example>
+% \fi
 % \vspace{-.5\baselineskip}
 %
 % \DescribeMacro{\mindflowLeft}
 % \DescribeMacro{\mindflowRight}
-% The left and right markers can be changed by redefining
-% \verb|\mindflowLeft| and \verb|\mindflowRight|. Both have the default
-% value as ``\verb|*|''.
+% The left and right markers is defined by
+% \lstinline|\mindflowLeft| and \lstinline|\mindflowRight|. Both have the default
+% value ``\verb|*|''.
 %
 % \DescribeMacro{\mindflowLineHeight}
-% The height of the separation lines is a length macro named \verb|\mindflowLineHeight|, 
-% with default value \verb|0.4pt|. You can change this with \verb|\setlength|.
+% The height of the separation lines is a length macro named \lstinline|\mindflowLineHeight|, 
+% with default value \verb|0.4pt|. You can change this with \lstinline|\setlength|.
 %
 % \DescribeMacro{mindflowLine}
 % \DescribeMacro{mindflowText}
@@ -178,18 +239,24 @@
 % \section{An example}
 % With option \verb|leftlinenumber, rightlinenumber, leftmarker, rightmarker| and the 
 % following settings:
-% \begin{verbatim}
-% \colorlet{mindflowLine}{green!50!black}
-% \colorlet{mindflowText}{blue!50!cyan}
-% \colorlet{mindflowNum}{red!50!orange}
-% \colorlet{mindflowMarker}{orange}
-% \renewcommand{\mindflowTextFont}{\normalfont\footnotesize\sffamily\itshape}
-% \renewcommand{\mindflowNumFont}{\normalfont\small\footnotesize\ttfamily}
-% \renewcommand{\mindflowMarkerFont}{\normalfont\footnotesize\sffamily}
-% \renewcommand{\mindflowLeft}{\hspace{1em}\(\succ\)}
-% \renewcommand{\mindflowRight}{\(\prec\)\hspace{1em}}
-% \setlength{\mindflowLineHeight}{1pt}
-% \end{verbatim}
+% \iffalse
+%<*example>
+% \fi
+\begin{code*}
+\colorlet{mindflowLine}{green!50!black}
+\colorlet{mindflowText}{blue!50!cyan}
+\colorlet{mindflowNum}{red!50!orange}
+\colorlet{mindflowMarker}{orange}
+\renewcommand{\mindflowTextFont}{\normalfont\footnotesize\sffamily\itshape}
+\renewcommand{\mindflowNumFont}{\normalfont\small\footnotesize\ttfamily}
+\renewcommand{\mindflowMarkerFont}{\normalfont\footnotesize\sffamily}
+\renewcommand{\mindflowLeft}{\hspace{1em}\(\succ\)}
+\renewcommand{\mindflowRight}{\(\prec\)\hspace{1em}}
+\setlength{\mindflowLineHeight}{1pt}
+\end{code*}
+% \iffalse
+%</example>
+% \fi
 % \vspace{-.5\baselineskip}
 % One gets:
 % \makeatletter
@@ -215,20 +282,20 @@
 % \section{Implementation}
 % Below is the complete source code of this package.
 %
-%    \begin{macrocode}
+% \begin{code}
 \RequirePackage{kvoptions}
 \SetupKeyvalOptions{%
     family = @mindflow,
     prefix = @mindflow@
 }
-\DeclareBoolOption[false]{off}              % Turn off mindflow
-\DeclareBoolOption[false]{leftmarker}       % Left marker
-\DeclareBoolOption[false]{rightmarker}      % Right marker
-\DeclareBoolOption[false]{linenumber}       % Left line numbers
-\DeclareBoolOption[false]{leftlinenumber}   % Left line numbers
-\DeclareBoolOption[false]{rightlinenumber}  % Right line numbers
-\DeclareBoolOption[false]{twocolumn}        % Two column
-\DeclareBoolOption[false]{incolumn}         % Separation line fits in the column
+\DeclareBoolOption[false]{off}             % Turn off mindflow
+\DeclareBoolOption[false]{leftmarker}      % Left marker
+\DeclareBoolOption[false]{rightmarker}     % Right marker
+\DeclareBoolOption[false]{linenumber}      % Left line numbers
+\DeclareBoolOption[false]{leftlinenumber}  % Left line numbers
+\DeclareBoolOption[false]{rightlinenumber} % Right line numbers
+\DeclareBoolOption[false]{twocolumn}       % Two column
+\DeclareBoolOption[false]{incolumn}        % Separation line fits in column
 
 \ProcessKeyvalOptions*\relax
 
@@ -353,7 +420,7 @@
   \linenomathpatchAMS{alignat}
   \linenomathpatchAMS{flalign}
 \fi
-%    \end{macrocode}
+% \end{code}
 %
 % \Finale
 \endinput
