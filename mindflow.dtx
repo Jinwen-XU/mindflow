@@ -18,7 +18,7 @@
 %<package>\NeedsTeXFormat{LaTeX2e}
 %<package>\ProvidesPackage{mindflow}
 %<*package>
-    [2021/05/23 mindflow environment]
+    [2021/05/24 mindflow environment]
 %</package>
 %
 %<*driver>
@@ -29,11 +29,12 @@
 \titleformat{\section}{\large\scshape\centering}{\thesection.}{.5em}{}
 \titleformat{\subsection}{\large\itshape}{\thesubsection}{.5em}{}
 \usepackage{titling}
-\setlength{\droptitle}{-.5in}
+\setlength{\droptitle}{-.7in}
 \usepackage{enumitem}
 \setlist{noitemsep}
 \usepackage{mathpazo,newpxtext}
 \useosf
+\usepackage{microtype}
 \PassOptionsToPackage{mathlines}{lineno}
 \usepackage[linenumber,rightmarker]{mindflow}
 \usepackage{blindtext}
@@ -63,15 +64,17 @@
     RequirePackage,SetupKeyvalOptions,DeclareBoolOption,ProcessKeyvalOptions,PassOptionsToPackage,
     if@mindflow@twocolumn,@mindflow@incolumntrue,if@mindflow@linenumber,@mindflow@leftlinenumbertrue,if@mindflow@off,if@mindflow@incolumn,if@mindflow@leftlinenumber,if@mindflow@rightlinenumber,if@mindflow@leftmarker,if@mindflow@rightmarker,
     ifLNturnsON,LNturnsONtrue,LNturnsONfalse,ifLineNumbers,
+    mindflowset,
     mindflow,endmindflow,comment,endcomment,
     mfSepLine,makeLineNumber,LineNumber,
-    ifdefined,linenomathpatch,cspreto,csappto,patchcmd,linenomathpatchAMS,linenomathAMS,linenomathWithnumbers,linenomath,endlinenomath,linenomathNonumbers,linenopenalty
+    ifdefined,linenomathpatch,cspreto,csappto,patchcmd,linenomathpatchAMS,linenomathAMS,linenomathWithnumbers,linenomath,endlinenomath,linenomathNonumbers,linenopenalty,
+    define@key,setkeys,
     }
 }
 \lstnewenvironment{code*}% 
 {\setkeys{lst}{columns=fullflexible,keepspaces=true}}{}
 \lstnewenvironment{code}% 
-{\setkeys{lst}{columns=fullflexible,keepspaces=true,numbers=left,numberstyle=\scriptsize, stepnumber=1, numbersep=5pt,lastline=137}}{}
+{\setkeys{lst}{columns=fullflexible,keepspaces=true,numbers=left,numberstyle=\scriptsize, stepnumber=1, numbersep=5pt,lastline=170}}{}
 \EnableCrossrefs
 \CodelineIndex
 \RecordChanges
@@ -96,13 +99,14 @@
 %
 % The \textsf{mindflow} package provides you a way to write your ideas 
 % and annotations clearly. For example, with the options
-% \verb|linenumber| and \verb|rightmarker|, you will get:
+% \verb|linenumber| and \verb|rightmarker|, you will get something like:
 % \begin{mindflow}
 %     What to write next:
 %     \begin{itemize}
-%         \item usage;
+%         \item usage: the initialization, options and configuration;
+%         \item an example;
+%         \item some word on the line numbering feature;
 %         \item some internal macros;
-%         \item an example maybe;
 %         \item the complete code.
 %     \end{itemize}
 % \end{mindflow}
@@ -125,7 +129,9 @@
 % There are a few options available, which are listed in the next subsection.
 %
 % \subsection{Options}
-% By default, the environment has no line numbers or markers. You can use the following options:
+% By default, the environment has no line numbers or markers. You can use the
+% following options (they can be specified directly, like \verb|off|, or as a
+% boolean optional, like \verb|off=false|):
 %
 % \begin{tabular}{ll}
 %     \verb|linenumber| & Same as \verb|leftlinenumber|\\
@@ -150,6 +156,79 @@
 % \iffalse
 %</example>
 % \fi
+%
+% \subsection{The configuration}
+%
+% \DescribeMacro{\mindflowset}
+% You can use \lstinline|\mindflowset{|\meta{configuration}\lstinline|}| to
+% configure the \texttt{mindflow} environment. The following keys are provided:
+%
+% \begin{center}
+% \begin{tabular}{ll}
+%     \verb|left| & The left marker\\
+%     \verb|right| & The right marker\\ 
+%     \verb|textcolor| & Color of the text\\
+%     \verb|numcolor| & Color of line numbers\\
+%     \verb|markercolor| & Color of the markers\\
+%     \verb|linecolor| & Color of the separation line \\
+% \end{tabular}
+%
+% \begin{tabular}{ll}
+%     \verb|textfont| & Font of the text\\
+%     \verb|numfont| & Font of line numbers\\
+%     \verb|markerfont| & Font of the marker\\
+%     \verb|lineheight| & Height of the separation line\\
+% \end{tabular}
+%\end{center}
+%
+% Additionally, all the options mentioned in the previous section (except for
+% \verb|off|) can be set within \lstinline|\mindflowset|.
+%
+% \section{An example}
+% With the following settings:
+% \iffalse
+%<*example>
+% \fi
+\begin{code*}
+\mindflowset{
+    leftlinenumber, rightlinenumber,
+    leftmarker, rightmarker,
+    linecolor   = green!50!black,
+    textcolor   = blue!50!cyan,
+    numcolor    = red!50!orange,
+    markercolor = orange,
+    textfont    = \footnotesize\sffamily\itshape,
+    numfont     = \small\footnotesize\ttfamily,
+    markerfont  = \footnotesize\sffamily,
+    left        = \hspace{1em}\(\succ\),
+    right       = \(\prec\)\hspace{1em},
+    lineheight  = 1pt
+}
+\end{code*}
+% \iffalse
+%</example>
+% \fi
+% \vspace{-.5\baselineskip}
+% One will have something like this:
+% \begingroup
+% \makeatletter
+% \@mindflow@leftmarkertrue
+% \@mindflow@rightlinenumbertrue
+% \makeatother
+% \colorlet{mindflowLine}{green!50!black}
+% \colorlet{mindflowText}{blue!50!cyan}
+% \colorlet{mindflowNum}{red!50!orange}
+% \colorlet{mindflowMarker}{orange}
+% \renewcommand{\mindflowTextFont}{\footnotesize\sffamily\itshape}
+% \renewcommand{\mindflowNumFont}{\small\footnotesize\ttfamily}
+% \renewcommand{\mindflowMarkerFont}{\footnotesize\sffamily}
+% \renewcommand{\mindflowLeft}{\hspace{1em}\(\succ\)}
+% \renewcommand{\mindflowRight}{\(\prec\)\hspace{1em}}
+% \setlength{\mindflowLineHeight}{1pt}
+% \begin{mindflow}
+%     \blindtext
+% \end{mindflow}
+% \endgroup
 %
 % \subsection{About the line numbers}
 % \linenumbers
@@ -192,6 +271,8 @@
 % \end{align*}
 % \end{mindflow}
 %
+% \bigskip
+% \centerline{\itshape ---~~Readers who are not interested in technical details can stop from here~~---}
 %
 % \section{Some \TeX{}nical details}
 %
@@ -206,9 +287,9 @@
 %<*example>
 % \fi
 \begin{code*}
-\newcommand{\mindflowTextFont}{\normalfont\footnotesize}
-\newcommand{\mindflowNumFont}{\normalfont\scriptsize\ttfamily}
-\newcommand{\mindflowMarkerFont}{\normalfont\scriptsize\ttfamily}
+\newcommand{\mindflowTextFont}{\footnotesize}
+\newcommand{\mindflowNumFont}{\scriptsize\ttfamily}
+\newcommand{\mindflowMarkerFont}{\scriptsize\ttfamily}
 \end{code*}
 % \iffalse
 %</example>
@@ -236,9 +317,9 @@
 % the context, with opacity 30\% for the separation lines, text and markers, and
 % 8\% for the line numbers. 
 %
-% \section{An example}
-% With option \verb|leftlinenumber, rightlinenumber, leftmarker, rightmarker| and the 
-% following settings:
+% \section{The same example}
+% With option \verb|leftlinenumber, rightlinenumber, leftmarker, rightmarker| 
+% and the following settings:
 % \iffalse
 %<*example>
 % \fi
@@ -247,9 +328,9 @@
 \colorlet{mindflowText}{blue!50!cyan}
 \colorlet{mindflowNum}{red!50!orange}
 \colorlet{mindflowMarker}{orange}
-\renewcommand{\mindflowTextFont}{\normalfont\footnotesize\sffamily\itshape}
-\renewcommand{\mindflowNumFont}{\normalfont\small\footnotesize\ttfamily}
-\renewcommand{\mindflowMarkerFont}{\normalfont\footnotesize\sffamily}
+\renewcommand{\mindflowTextFont}{\footnotesize\sffamily\itshape}
+\renewcommand{\mindflowNumFont}{\small\footnotesize\ttfamily}
+\renewcommand{\mindflowMarkerFont}{\footnotesize\sffamily}
 \renewcommand{\mindflowLeft}{\hspace{1em}\(\succ\)}
 \renewcommand{\mindflowRight}{\(\prec\)\hspace{1em}}
 \setlength{\mindflowLineHeight}{1pt}
@@ -258,24 +339,7 @@
 %</example>
 % \fi
 % \vspace{-.5\baselineskip}
-% One gets:
-% \makeatletter
-% \@mindflow@leftmarkertrue
-% \@mindflow@rightlinenumbertrue
-% \makeatother
-% \colorlet{mindflowLine}{green!50!black}
-% \colorlet{mindflowText}{blue!50!cyan}
-% \colorlet{mindflowNum}{red!50!orange}
-% \colorlet{mindflowMarker}{orange}
-% \renewcommand{\mindflowTextFont}{\normalfont\footnotesize\sffamily\itshape}
-% \renewcommand{\mindflowNumFont}{\normalfont\small\footnotesize\ttfamily}
-% \renewcommand{\mindflowMarkerFont}{\normalfont\footnotesize\sffamily}
-% \renewcommand{\mindflowLeft}{\hspace{1em}\(\succ\)}
-% \renewcommand{\mindflowRight}{\(\prec\)\hspace{1em}}
-% \setlength{\mindflowLineHeight}{1pt}
-% \begin{mindflow}
-%     \blindtext
-% \end{mindflow}
+% One will get the same result as in the previous example.
 %
 % \StopEventually{}
 %
@@ -318,9 +382,9 @@
 \colorlet{mindflowMarker}{mfSavedColor!30}
 \colorlet{mindflowNum}{mfSavedColor!8}
 
-\newcommand{\mindflowTextFont}{\normalfont\footnotesize}
-\newcommand{\mindflowNumFont}{\normalfont\scriptsize\ttfamily}
-\newcommand{\mindflowMarkerFont}{\normalfont\scriptsize\ttfamily}
+\newcommand{\mindflowTextFont}{\footnotesize}
+\newcommand{\mindflowNumFont}{\scriptsize\ttfamily}
+\newcommand{\mindflowMarkerFont}{\scriptsize\ttfamily}
 \newcommand{\mindflowLeft}{*}
 \newcommand{\mindflowRight}{*}
 \newlength{\mindflowLineHeight}
@@ -361,16 +425,16 @@
     \LNturnsONfalse%
     \ifLineNumbers\LNturnsONtrue\fi\nolinenumbers%
     \color{mindflowLine}\mfSepLine%
-    \mindflowTextFont\color{mindflowText}%
+    \normalfont\mindflowTextFont\color{mindflowText}%
     \linenumbers%
     \renewcommand\makeLineNumber{%
       \hss%
       \if@mindflow@leftlinenumber%
-        \mindflowNumFont\color{mindflowNum}\LineNumber\hspace{1em}%
+        \normalfont\mindflowNumFont\color{mindflowNum}\LineNumber\hspace{1em}%
       \fi%
       \color{mindflowMarker}%
       \if@mindflow@leftmarker%
-        \mindflowMarkerFont\mindflowLeft\hspace{1em}%
+        \normalfont\mindflowMarkerFont\mindflowLeft\hspace{1em}%
       \fi%
       \rlap{\hskip\textwidth%
         \if@mindflow@rightmarker%
@@ -378,7 +442,7 @@
         \fi%
         \if@mindflow@rightlinenumber%
           \hspace{1em}%
-          \mindflowNumFont\color{mindflowNum}\LineNumber%
+          \normalfont\mindflowNumFont\color{mindflowNum}\LineNumber%
         \fi%
       }%
     }%
@@ -392,6 +456,39 @@
   }
 \fi
 
+%%================================
+%% \mindflowset
+%%================================
+\define@key{mindflow}{leftmarker}[true]{\csname @mindflow@leftmarker#1\endcsname}
+\define@key{mindflow}{rightmarker}[true]{\csname @mindflow@rightmarker#1\endcsname}
+\define@key{mindflow}{linenumber}[true]{\csname @mindflow@linenumber#1\endcsname}
+\define@key{mindflow}{leftlinenumber}[true]{\csname @mindflow@leftlinenumber#1\endcsname}
+\define@key{mindflow}{rightlinenumber}[true]{\csname @mindflow@rightlinenumber#1\endcsname}
+\define@key{mindflow}{twocolumn}[true]{\csname @mindflow@twocolumn#1\endcsname}
+\define@key{mindflow}{incolumn}[true]{\csname @mindflow@incolumn#1\endcsname}
+\define@key{mindflow}{linecolor}{\colorlet{mindflowLine}{#1}}
+\define@key{mindflow}{textcolor}{\colorlet{mindflowText}{#1}}
+\define@key{mindflow}{numcolor}{\colorlet{mindflowNum}{#1}}
+\define@key{mindflow}{markercolor}{\colorlet{mindflowMarker}{#1}}
+\define@key{mindflow}{textfont}{\renewcommand{\mindflowTextFont}{#1}}
+\define@key{mindflow}{numfont}{\renewcommand{\mindflowNumFont}{#1}}
+\define@key{mindflow}{markerfont}{\renewcommand{\mindflowMarkerFont}{#1}}
+\define@key{mindflow}{left}{\renewcommand{\mindflowLeft}{#1}}
+\define@key{mindflow}{right}{\renewcommand{\mindflowRight}{#1}}
+\define@key{mindflow}{lineheight}{\setlength{\mindflowLineHeight}{#1}}
+\newcommand{\mindflowset}[1]{%
+  \setkeys{mindflow}{#1}%
+  \if@mindflow@twocolumn%
+    \@mindflow@incolumntrue%
+  \fi%
+  \if@mindflow@linenumber%
+    \@mindflow@leftlinenumbertrue%
+  \fi%
+}
+
+%%================================
+%% lineno patch
+%%================================
 \ifdefined\linenomathpatch\else
   \RequirePackage{amsmath}
   \RequirePackage{etoolbox}
