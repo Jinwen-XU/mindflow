@@ -76,7 +76,7 @@
 \lstnewenvironment{code*}% 
 {\setkeys{lst}{columns=fullflexible,keepspaces=true}}{}
 \lstnewenvironment{code}% 
-{\setkeys{lst}{columns=fullflexible,keepspaces=true,numbers=left,numberstyle=\scriptsize, stepnumber=1, numbersep=5pt,lastline=202}}{}
+{\setkeys{lst}{columns=fullflexible,keepspaces=true,numbers=left,numberstyle=\scriptsize, stepnumber=1, numbersep=5pt,lastline=203}}{}
 \EnableCrossrefs
 \CodelineIndex
 \RecordChanges
@@ -425,6 +425,7 @@
 \let\endmindflowOFF=\endcomment
 
 \def\mindflowON{%
+  \postdisplaypenalty=10000
   \medskip%
   \setcounter{recordLN}{\value{linenumber}}%
   \setcounter{linenumber}{\value{mfLN}}%
