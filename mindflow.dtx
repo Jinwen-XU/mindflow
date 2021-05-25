@@ -18,7 +18,7 @@
 %<package>\NeedsTeXFormat{LaTeX2e}
 %<package>\ProvidesPackage{mindflow}
 %<*package>
-    [2021/05/24 mindflow environment]
+    [2021/05/25 mindflow environment]
 %</package>
 %
 %<*driver>
@@ -62,19 +62,21 @@
 \lstset{moretexcs=%
     {linenumbers,nolinenumbers,mindflowLeft,mindflowRight,mindflowTextFont,mindflowNumFont,mindflowMarkerFont,mindflowLineHeight,setlength,colorlet,color,
     RequirePackage,SetupKeyvalOptions,DeclareBoolOption,ProcessKeyvalOptions,PassOptionsToPackage,
-    if@mindflow@twocolumn,@mindflow@incolumntrue,if@mindflow@linenumber,@mindflow@leftlinenumbertrue,if@mindflow@off,if@mindflow@incolumn,if@mindflow@leftlinenumber,if@mindflow@rightlinenumber,if@mindflow@leftmarker,if@mindflow@rightmarker,
+    if@mindflow@twocolumn,@mindflow@incolumntrue,if@mindflow@linenumber,@mindflow@leftlinenumbertrue,if@mindflow@on,if@mindflow@off,@mindflow@offfalse,if@mindflow@incolumn,if@mindflow@leftlinenumber,if@mindflow@rightlinenumber,if@mindflow@leftmarker,if@mindflow@rightmarker,
     ifLNturnsON,LNturnsONtrue,LNturnsONfalse,ifLineNumbers,
     mindflowset,
     mindflow,endmindflow,comment,endcomment,
+    mindflowON,endmindflowON,mindflowOFF,endmindflowOFF,
     mfSepLine,makeLineNumber,LineNumber,
     ifdefined,linenomathpatch,cspreto,csappto,patchcmd,linenomathpatchAMS,linenomathAMS,linenomathWithnumbers,linenomath,endlinenomath,linenomathNonumbers,linenopenalty,
     define@key,setkeys,
+    nowidow,
     }
 }
 \lstnewenvironment{code*}% 
 {\setkeys{lst}{columns=fullflexible,keepspaces=true}}{}
 \lstnewenvironment{code}% 
-{\setkeys{lst}{columns=fullflexible,keepspaces=true,numbers=left,numberstyle=\scriptsize, stepnumber=1, numbersep=5pt,lastline=170}}{}
+{\setkeys{lst}{columns=fullflexible,keepspaces=true,numbers=left,numberstyle=\scriptsize, stepnumber=1, numbersep=5pt,lastline=202}}{}
 \EnableCrossrefs
 \CodelineIndex
 \RecordChanges
@@ -140,7 +142,7 @@
 %     \verb|leftmarker| & Enable left marker, by default it is a ``\verb|*|''\\
 %     \verb|rightmarker| & Enable right marker, by default it is a ``\verb|*|''\\
 %     \verb|incolumn| or \verb|twocolumn| & The separation line would fit in the column \\&(\emph{automatically applied in two-column documents})\\
-%     \verb|off| & Hide all the \verb|mindflow| environments
+%     \verb|off|, \verb|on| & Turn the \verb|mindflow| environments \emph{off} or \emph{on}
 % \end{tabular}
 %
 % \DescribeEnv{\{mindflow\}}
@@ -181,8 +183,7 @@
 % \end{tabular}
 %\end{center}
 %
-% Additionally, all the options mentioned in the previous section (except for
-% \verb|off|) can be set within \lstinline|\mindflowset|.
+% Additionally, all the options mentioned in the previous section can be set with \lstinline|\mindflowset|.
 %
 % \section{An example}
 % With the following settings:
@@ -271,7 +272,7 @@
 % \end{align*}
 % \end{mindflow}
 %
-% \bigskip
+% \clearpage
 % \centerline{\itshape ---~~Readers who are not interested in technical details can skip the rest~~---}
 %
 % \section{Some \TeX{}nical details}
@@ -352,6 +353,7 @@
     family = @mindflow,
     prefix = @mindflow@
 }
+\DeclareBoolOption[true]{on}               % Turn on mindflow
 \DeclareBoolOption[false]{off}             % Turn off mindflow
 \DeclareBoolOption[false]{leftmarker}      % Left marker
 \DeclareBoolOption[false]{rightmarker}     % Right marker
@@ -363,6 +365,9 @@
 
 \ProcessKeyvalOptions*\relax
 
+\if@mindflow@on
+  \@mindflow@offfalse
+\fi
 \if@mindflow@twocolumn
   \@mindflow@incolumntrue
 \fi
@@ -393,19 +398,22 @@
 %%================================
 %% The mindflow environment
 %%================================
+\RequirePackage{nowidow}
+\RequirePackage{verbatim}
 \newif\ifLNturnsON
 \newcommand*{\mfSepLine}{%
   \parskip=0pt
+  \nowidow[3]\par\nobreak%
   \LNturnsONfalse%
   \ifLineNumbers\LNturnsONtrue\fi\nolinenumbers%
-  \par\noindent\nopagebreak%
+  \vspace*{-.5\baselineskip}%
   \if@mindflow@incolumn%
-    \makebox[\linewidth]{\rule{\linewidth}{\mindflowLineHeight}}%
+    \makebox[\linewidth]{\color{mindflowLine}\rule{\linewidth}{\mindflowLineHeight}}%
   \else%
     \hspace*{-\paperwidth}%
-    \makebox[\linewidth]{\rule{4\paperwidth}{\mindflowLineHeight}}%
+    \makebox[\linewidth]{\color{mindflowLine}\rule{4\paperwidth}{\mindflowLineHeight}}%
   \fi%
-  \nopagebreak\par%
+  \nowidow[3]\par\nobreak%
   \ifLNturnsON\linenumbers\fi%
 }
 
@@ -413,52 +421,77 @@
 \newcounter{mfLN}
 \setcounter{mfLN}{1}
 
-\if@mindflow@off
-  \RequirePackage{verbatim}
-  \let\mindflow=\comment
-  \let\endmindflow=\endcomment
-\else
-  \newenvironment{mindflow}
-  {%
-    \setcounter{recordLN}{\value{linenumber}}%
-    \setcounter{linenumber}{\value{mfLN}}%
-    \LNturnsONfalse%
-    \ifLineNumbers\LNturnsONtrue\fi\nolinenumbers%
-    \color{mindflowLine}\mfSepLine%
-    \normalfont\mindflowTextFont\color{mindflowText}%
-    \linenumbers%
-    \renewcommand\makeLineNumber{%
-      \hss%
-      \if@mindflow@leftlinenumber%
-        \normalfont\mindflowNumFont\color{mindflowNum}\LineNumber\hspace{1em}%
+\let\mindflowOFF=\comment
+\let\endmindflowOFF=\endcomment
+
+\def\mindflowON{%
+  \medskip%
+  \setcounter{recordLN}{\value{linenumber}}%
+  \setcounter{linenumber}{\value{mfLN}}%
+  \LNturnsONfalse%
+  \ifLineNumbers\LNturnsONtrue\fi\nolinenumbers%
+  \mfSepLine%
+  \normalfont\mindflowTextFont\color{mindflowText}%
+  \linenumbers%
+  \renewcommand{\makeLineNumber}{%
+    \hss%
+    \if@mindflow@leftlinenumber%
+      \normalfont\mindflowNumFont\color{mindflowNum}\LineNumber\hspace{1em}%
+    \fi%
+    \color{mindflowMarker}%
+    \if@mindflow@leftmarker%
+      \normalfont\mindflowMarkerFont\mindflowLeft\hspace{1em}%
+    \fi%
+    \rlap{\hskip\textwidth%
+      \if@mindflow@rightmarker%
+        \hspace{1em}\mindflowRight%
       \fi%
-      \color{mindflowMarker}%
-      \if@mindflow@leftmarker%
-        \normalfont\mindflowMarkerFont\mindflowLeft\hspace{1em}%
+      \if@mindflow@rightlinenumber%
+        \hspace{1em}%
+        \normalfont\mindflowNumFont\color{mindflowNum}\LineNumber%
       \fi%
-      \rlap{\hskip\textwidth%
-        \if@mindflow@rightmarker%
-          \hspace{1em}\mindflowRight%
-        \fi%
-        \if@mindflow@rightlinenumber%
-          \hspace{1em}%
-          \normalfont\mindflowNumFont\color{mindflowNum}\LineNumber%
-        \fi%
-      }%
     }%
-  }
-  {%
-    \par%
-    \vspace{-.5\baselineskip}\color{mindflowLine}\mfSepLine%
-    \ifLNturnsON\linenumbers\fi%
-    \setcounter{mfLN}{\value{linenumber}}%
-    \setcounter{linenumber}{\value{recordLN}}%
-  }
+  }%
+}
+\def\endmindflowON{%
+  \mfSepLine%
+  \ifLNturnsON\linenumbers\fi%
+  \setcounter{mfLN}{\value{linenumber}}%
+  \setcounter{linenumber}{\value{recordLN}}%
+  \medskip%
+}
+
+\if@mindflow@off
+  \let\mindflow=\mindflowOFF
+  \let\endmindflow=\endmindflowOFF
+\else
+  \let\mindflow=\mindflowON
+  \let\endmindflow=\endmindflowON
 \fi
 
 %%================================
 %% \mindflowset
 %%================================
+\define@key{mindflow}{on}[true]{%
+  \csname @mindflow@on#1\endcsname%
+  \if@mindflow@off%
+    \let\mindflow=\mindflowOFF%
+    \let\endmindflow=\endmindflowOFF%
+  \else%
+    \let\mindflow=\mindflowON%
+    \let\endmindflow=\endmindflowON%
+  \fi%
+}
+\define@key{mindflow}{off}[true]{%
+  \csname @mindflow@off#1\endcsname%
+  \if@mindflow@off%
+    \let\mindflow=\mindflowOFF%
+    \let\endmindflow=\endmindflowOFF%
+  \else%
+    \let\mindflow=\mindflowON%
+    \let\endmindflow=\endmindflowON%
+  \fi%
+}
 \define@key{mindflow}{leftmarker}[true]{\csname @mindflow@leftmarker#1\endcsname}
 \define@key{mindflow}{rightmarker}[true]{\csname @mindflow@rightmarker#1\endcsname}
 \define@key{mindflow}{linenumber}[true]{\csname @mindflow@linenumber#1\endcsname}
