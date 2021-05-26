@@ -18,7 +18,7 @@
 %<package>\NeedsTeXFormat{LaTeX2e}
 %<package>\ProvidesPackage{mindflow}
 %<*package>
-    [2021/05/25 mindflow environment]
+    [2021/05/27 mindflow environment]
 %</package>
 %
 %<*driver>
@@ -68,6 +68,7 @@
     mindflow,endmindflow,comment,endcomment,
     mindflowON,endmindflowON,mindflowOFF,endmindflowOFF,
     mfSepLine,makeLineNumber,LineNumber,
+    mindflow@makeLineNumber,LocallyStopLineNumbers,ResumeLineNumbers,
     ifdefined,linenomathpatch,cspreto,csappto,patchcmd,linenomathpatchAMS,linenomathAMS,linenomathWithnumbers,linenomath,endlinenomath,linenomathNonumbers,linenopenalty,
     define@key,setkeys,
     nowidow,
@@ -76,7 +77,7 @@
 \lstnewenvironment{code*}% 
 {\setkeys{lst}{columns=fullflexible,keepspaces=true}}{}
 \lstnewenvironment{code}% 
-{\setkeys{lst}{columns=fullflexible,keepspaces=true,numbers=left,numberstyle=\scriptsize, stepnumber=1, numbersep=5pt,lastline=203}}{}
+{\setkeys{lst}{columns=fullflexible,keepspaces=true,numbers=left,numberstyle=\scriptsize, stepnumber=1, numbersep=5pt,lastline=209}}{}
 \EnableCrossrefs
 \CodelineIndex
 \RecordChanges
@@ -315,8 +316,8 @@
 % markers within the \verb|mindflow| environments are called
 % \verb|mindflowLine|, \verb|mindflowText|, \verb|mindflowNum| and
 % \verb|mindflowMarker|, respectively. By default, they have the same color as
-% the context, with opacity 30\% for the separation lines, text and markers, and
-% 8\% for the line numbers. 
+% the context, with opacity 40\% for the separation lines and text, 20\% for 
+% the markers, and 8\% for the line numbers. 
 %
 % \section{The same example}
 % With option \verb|leftlinenumber, rightlinenumber, leftmarker, rightmarker| 
@@ -382,9 +383,9 @@
 \RequirePackage{xcolor}
 
 \colorlet{mfSavedColor}{.}
-\colorlet{mindflowLine}{mfSavedColor!30}
-\colorlet{mindflowText}{mfSavedColor!30}
-\colorlet{mindflowMarker}{mfSavedColor!30}
+\colorlet{mindflowLine}{mfSavedColor!40}
+\colorlet{mindflowText}{mfSavedColor!40}
+\colorlet{mindflowMarker}{mfSavedColor!20}
 \colorlet{mindflowNum}{mfSavedColor!8}
 
 \newcommand{\mindflowTextFont}{\footnotesize}
@@ -398,14 +399,22 @@
 %%================================
 %% The mindflow environment
 %%================================
+\PassOptionsToPackage{all}{nowidow}
 \RequirePackage{nowidow}
 \RequirePackage{verbatim}
+
 \newif\ifLNturnsON
+\def\LocallyStopLineNumbers{\LNturnsONfalse%
+    \ifLineNumbers\LNturnsONtrue\fi\nolinenumbers}
+\def\ResumeLineNumbers{\ifLNturnsON\linenumbers\fi}
+
+\newcounter{recordLN}
+\newcounter{mfLN}
+\setcounter{mfLN}{1}
+
 \newcommand*{\mfSepLine}{%
-  \parskip=0pt
-  \nowidow[3]\par\nobreak%
-  \LNturnsONfalse%
-  \ifLineNumbers\LNturnsONtrue\fi\nolinenumbers%
+  \par%\nobreak%
+  \LocallyStopLineNumbers%
   \vspace*{-.5\baselineskip}%
   \if@mindflow@incolumn%
     \makebox[\linewidth]{\color{mindflowLine}\rule{\linewidth}{\mindflowLineHeight}}%
@@ -413,50 +422,48 @@
     \hspace*{-\paperwidth}%
     \makebox[\linewidth]{\color{mindflowLine}\rule{4\paperwidth}{\mindflowLineHeight}}%
   \fi%
-  \nowidow[3]\par\nobreak%
-  \ifLNturnsON\linenumbers\fi%
+  \par%\nobreak%
+  \ResumeLineNumbers%
 }
 
-\newcounter{recordLN}
-\newcounter{mfLN}
-\setcounter{mfLN}{1}
+\newcommand{\mindflow@makeLineNumber}{%
+  \hss%
+  \if@mindflow@leftlinenumber%
+    \normalfont\mindflowNumFont\color{mindflowNum}\LineNumber\hspace{1em}%
+  \fi%
+  \color{mindflowMarker}%
+  \if@mindflow@leftmarker%
+    \normalfont\mindflowMarkerFont\mindflowLeft\hspace{1em}%
+  \fi%
+  \rlap{\hskip\textwidth%
+    \if@mindflow@rightmarker%
+      \hspace{1em}\mindflowRight%
+    \fi%
+    \if@mindflow@rightlinenumber%
+      \hspace{1em}%
+      \normalfont\mindflowNumFont\color{mindflowNum}\LineNumber%
+    \fi%
+  }%
+}%
 
 \let\mindflowOFF=\comment
 \let\endmindflowOFF=\endcomment
 
 \def\mindflowON{%
   \postdisplaypenalty=10000
+  \parskip=0pt
   \medskip%
   \setcounter{recordLN}{\value{linenumber}}%
   \setcounter{linenumber}{\value{mfLN}}%
-  \LNturnsONfalse%
-  \ifLineNumbers\LNturnsONtrue\fi\nolinenumbers%
   \mfSepLine%
   \normalfont\mindflowTextFont\color{mindflowText}%
   \linenumbers%
-  \renewcommand{\makeLineNumber}{%
-    \hss%
-    \if@mindflow@leftlinenumber%
-      \normalfont\mindflowNumFont\color{mindflowNum}\LineNumber\hspace{1em}%
-    \fi%
-    \color{mindflowMarker}%
-    \if@mindflow@leftmarker%
-      \normalfont\mindflowMarkerFont\mindflowLeft\hspace{1em}%
-    \fi%
-    \rlap{\hskip\textwidth%
-      \if@mindflow@rightmarker%
-        \hspace{1em}\mindflowRight%
-      \fi%
-      \if@mindflow@rightlinenumber%
-        \hspace{1em}%
-        \normalfont\mindflowNumFont\color{mindflowNum}\LineNumber%
-      \fi%
-    }%
-  }%
+  \let\makeLineNumber\mindflow@makeLineNumber%
+  \nopagebreak%
 }
 \def\endmindflowON{%
+  \nowidow[3]%
   \mfSepLine%
-  \ifLNturnsON\linenumbers\fi%
   \setcounter{mfLN}{\value{linenumber}}%
   \setcounter{linenumber}{\value{recordLN}}%
   \medskip%
