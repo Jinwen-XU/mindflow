@@ -18,7 +18,7 @@
 %<package>\NeedsTeXFormat{LaTeX2e}
 %<package>\ProvidesPackage{mindflow}
 %<*package>
-    [2021/07/24 mindflow environment]
+    [2021/09/12 mindflow environment]
 %</package>
 %
 %<*driver>
@@ -79,7 +79,7 @@
 \lstnewenvironment{code*}% 
 {\setkeys{lst}{columns=fullflexible,keepspaces=true}}{}
 \lstnewenvironment{code}% 
-{\setkeys{lst}{columns=fullflexible,keepspaces=true,numbers=left,numberstyle=\scriptsize, stepnumber=1, numbersep=5pt,lastline=252}}{}
+{\setkeys{lst}{columns=fullflexible,keepspaces=true,numbers=left,numberstyle=\scriptsize, stepnumber=1, numbersep=5pt,lastline=253}}{}
 \EnableCrossrefs
 \CodelineIndex
 \RecordChanges
@@ -431,6 +431,7 @@
   \par%\nobreak%
   \LocallyStopLineNumbers%
   \vspace*{-.5\baselineskip}%
+  \noindent%
   \if@mindflow@incolumn%
     \makebox[\linewidth]{\color{mindflowLine}\rule{\linewidth}{\mindflowLineHeight}}%
   \else%
