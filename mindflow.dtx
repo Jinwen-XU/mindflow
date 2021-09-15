@@ -18,7 +18,7 @@
 %<package>\NeedsTeXFormat{LaTeX2e}
 %<package>\ProvidesPackage{mindflow}
 %<*package>
-    [2021/09/12 mindflow environment]
+    [2021/09/15 mindflow environment]
 %</package>
 %
 %<*driver>
@@ -63,7 +63,7 @@
     {linenumbers,nolinenumbers,mindflowLeft,mindflowRight,mindflowTextFont,mindflowNumFont,mindflowMarkerFont,mindflowLineHeight,setlength,colorlet,color,
     RequirePackage,SetupKeyvalOptions,DeclareBoolOption,ProcessKeyvalOptions,PassOptionsToPackage,
     PackageWarning,MessageBreak,
-    if@mindflow@twocolumn,@mindflow@incolumntrue,if@mindflow@linenumber,@mindflow@leftlinenumbertrue,if@mindflow@on,if@mindflow@off,@mindflow@offfalse,if@mindflow@incolumn,if@mindflow@leftlinenumber,if@mindflow@rightlinenumber,if@mindflow@leftmarker,if@mindflow@rightmarker,if@mindflow@nonbreakable,
+    @mindflow@incolumntrue,if@mindflow@linenumber,@mindflow@leftlinenumbertrue,if@mindflow@on,if@mindflow@off,@mindflow@offfalse,if@mindflow@incolumn,if@mindflow@leftlinenumber,if@mindflow@rightlinenumber,if@mindflow@leftmarker,if@mindflow@rightmarker,if@mindflow@nonbreakable,
     mindflow@parindent,mindflow@parskip,
     ifLNturnsON,LNturnsONtrue,LNturnsONfalse,ifLineNumbers,
     mindflowset,
@@ -71,6 +71,9 @@
     mindflowON,endmindflowON,mindflowOFF,endmindflowOFF,
     mfSepLine,makeLineNumber,LineNumber,
     mindflow@makeLineNumber,LocallyStopLineNumbers,ResumeLineNumbers,
+    if@twocolumn,
+    ifICturnsON,ICturnsONtrue,ICturnsONfalse,AutoIncolumn,ResumeIncolumn,
+    newtcolorbox,
     ifdefined,linenomathpatch,cspreto,csappto,patchcmd,linenomathpatchAMS,linenomathAMS,linenomathWithnumbers,linenomath,endlinenomath,linenomathNonumbers,linenopenalty,
     define@key,setkeys,
     nowidow,
@@ -79,7 +82,7 @@
 \lstnewenvironment{code*}% 
 {\setkeys{lst}{columns=fullflexible,keepspaces=true}}{}
 \lstnewenvironment{code}% 
-{\setkeys{lst}{columns=fullflexible,keepspaces=true,numbers=left,numberstyle=\scriptsize, stepnumber=1, numbersep=5pt,lastline=253}}{}
+{\setkeys{lst}{columns=fullflexible,keepspaces=true,numbers=left,numberstyle=\scriptsize, stepnumber=1, numbersep=5pt,lastline=263}}{}
 \EnableCrossrefs
 \CodelineIndex
 \RecordChanges
@@ -125,7 +128,7 @@
 %<*example>
 % \fi
 \begin{code*}
-  \usepackage{mindflow}
+\usepackage{mindflow}
 \end{code*}
 % \iffalse
 %</example>
@@ -136,12 +139,12 @@
 % boolean optional, like \verb|off=false|):
 %
 % \begin{tabular}{ll}
-%     \verb|linenumber| & Same as \verb|leftlinenumber|\\
+%     \verb|linenumber|\hspace{5em} & Same as \verb|leftlinenumber|\\
 %     \verb|leftlinenumber| & Enable left line numbers\\
 %     \verb|rightlinenumber| & Enable right line numbers\\
 %     \verb|leftmarker| & Enable left marker, by default it is a ``\verb|*|''\\
 %     \verb|rightmarker| & Enable right marker, by default it is a ``\verb|*|''\\
-%     \verb|incolumn| or \verb|twocolumn| & The separation line would fit in the column \\&(\emph{automatically applied in two-column documents})\\
+%     \verb|incolumn| & The separation line would fit in the column \\&(\emph{automatically applied in two-column documents})\\
 %     \verb|off|, \verb|on| & Turn the \verb|mindflow| environments \emph{off} or \emph{on}
 % \end{tabular}
 %
@@ -154,9 +157,9 @@
 %<*example>
 % \fi
 \begin{code*}
-  \begin{mindflow}
-      (*{\normalfont\meta{text}}*)
-  \end{mindflow}
+\begin{mindflow}
+    (*{\normalfont\meta{text}}*)
+\end{mindflow}
 \end{code*}
 % \iffalse
 %</example>
@@ -254,7 +257,7 @@
 %<*example>
 % \fi
 \begin{code*}
-  \PassOptionsToPackage{mathlines}{lineno}
+\PassOptionsToPackage{mathlines}{lineno}
 \end{code*}
 % \iffalse
 %</example>
@@ -353,7 +356,7 @@
 % 
 % \begin{itemize}
 %     \item There is no absolute guarantee that the separation lines will not fall alone at the top or bottom of the page, though great effort has been made to reduce the occurrence of such situation.
-%     \item The \textsf{tcolorbox} version doesn't support line numbering quite well, especially for displayed equations. This is due to the usage of \verb|internallinenumbers|.
+%     \item The \textsf{nonbreakable} version doesn't support line numbering quite well, especially for displayed equations. This is due to the usage of \verb|internallinenumbers|.
 % \end{itemize}
 %
 % \StopEventually{}
@@ -375,7 +378,6 @@
 \DeclareBoolOption[false]{linenumber}      % Left line numbers
 \DeclareBoolOption[false]{leftlinenumber}  % Left line numbers
 \DeclareBoolOption[false]{rightlinenumber} % Right line numbers
-\DeclareBoolOption[false]{twocolumn}       % Two column
 \DeclareBoolOption[false]{incolumn}        % Separation line fits in column
 \DeclareBoolOption[false]{nonbreakable}    % Use the tcolorbox version
 
@@ -383,9 +385,6 @@
 
 \if@mindflow@on
   \@mindflow@offfalse
-\fi
-\if@mindflow@twocolumn
-  \@mindflow@incolumntrue
 \fi
 \if@mindflow@linenumber
   \@mindflow@leftlinenumbertrue
@@ -422,6 +421,13 @@
 \def\LocallyStopLineNumbers{\LNturnsONfalse%
     \ifLineNumbers\LNturnsONtrue\fi\nolinenumbers}
 \def\ResumeLineNumbers{\ifLNturnsON\linenumbers\fi}
+
+\newif\ifICturnsON
+\def\AutoIncolumn{\ICturnsONfalse%
+    \if@mindflow@incolumn\ICturnsONtrue\fi%
+    \if@twocolumn\@mindflow@incolumntrue\fi%
+}
+\def\ResumeIncolumn{\ifICturnsON\@mindflow@incolumntrue\fi}
 
 \newcounter{recordLN}
 \newcounter{mfLN}
@@ -471,6 +477,7 @@
   \medskip%
   \setcounter{recordLN}{\value{linenumber}}%
   \setcounter{linenumber}{\value{mfLN}}%
+  \AutoIncolumn%
   \mfSepLine%
   \normalfont\mindflowTextFont\color{mindflowText}%
   \linenumbers%
@@ -482,6 +489,7 @@
   \mfSepLine%
   \setcounter{mfLN}{\value{linenumber}}%
   \setcounter{linenumber}{\value{recordLN}}%
+  \ResumeIncolumn%
   \medskip%
 }
 
@@ -492,31 +500,43 @@
 \RequirePackage{tcolorbox}
 \newlength{\mindflow@parindent}
 \newlength{\mindflow@parskip}
+\newtcolorbox{mindflow@nonbreakable}[1]{
+  enhanced jigsaw,
+  colback=mindflowBackground,colframe=mindflowLine,
+  leftrule=0pt, rightrule=0pt, sharp corners,
+  toprule=\mindflowLineHeight, bottomrule=\mindflowLineHeight,
+  boxsep=0pt, top=.3\baselineskip, bottom=.3\baselineskip,
+  fontupper=\mindflowTextFont,extras={colupper={mindflowText}},
+  before upper={
+    \setlength{\parindent}{\mindflow@parindent}%
+    \setlength{\parskip}{\mindflow@parskip}%
+  },#1
+}
 \def\mindflowON{%
-  \LNturnsONfalse%
-  \ifLineNumbers\LNturnsONtrue\fi\nolinenumbers%
+  \LocallyStopLineNumbers%
+  \setcounter{recordLN}{\value{linenumber}}%
+  \setcounter{linenumber}{\value{mfLN}}%
+  \AutoIncolumn%
   \setlength{\mindflow@parindent}{\parindent}%
   \setlength{\mindflow@parskip}{\parskip}%
-  \begin{tcolorbox}[enhanced jigsaw,
-    colback=mindflowBackground,colframe=mindflowLine, 
-    leftrule=0pt, rightrule=0pt, sharp corners,
-    toprule=\mindflowLineHeight, bottomrule=\mindflowLineHeight, 
-    boxsep=0pt, top=.3\baselineskip, bottom=.3\baselineskip,
-    grow to left by=\linewidth,left=\linewidth,
-    grow to right by=\linewidth,right=\linewidth,
-    fontupper=\mindflowTextFont,extras={colupper={mindflowText}},
-    before upper={ 
-      \setlength{\parindent}{\mindflow@parindent}%
-      \setlength{\parskip}{\mindflow@parskip}%
-    }]
+  \if@mindflow@incolumn%
+    \begin{mindflow@nonbreakable}{left=0pt,right=0pt}
+  \else%
+    \begin{mindflow@nonbreakable}{%
+      grow to left by=\linewidth,left=\linewidth,
+      grow to right by=\linewidth,right=\linewidth}
+  \fi
     \begin{internallinenumbers}%
       \let\makeLineNumber\mindflow@makeLineNumber%
 }
 \def\endmindflowON{%
       \nowidow[3]%
     \end{internallinenumbers}%
-  \end{tcolorbox}\par%
-  \ifLNturnsON\linenumbers\fi%
+  \end{mindflow@nonbreakable}\par%
+  \ResumeLineNumbers%
+  \setcounter{mfLN}{\value{linenumber}}%
+  \setcounter{linenumber}{\value{recordLN}}%
+  \ResumeIncolumn%
 }
 \fi
 
@@ -553,10 +573,9 @@
 }
 \define@key{mindflow}{leftmarker}[true]{\csname @mindflow@leftmarker#1\endcsname}
 \define@key{mindflow}{rightmarker}[true]{\csname @mindflow@rightmarker#1\endcsname}
-\define@key{mindflow}{linenumber}[true]{\csname @mindflow@linenumber#1\endcsname}
+\define@key{mindflow}{linenumber}[true]{\csname @mindflow@leftlinenumber#1\endcsname}
 \define@key{mindflow}{leftlinenumber}[true]{\csname @mindflow@leftlinenumber#1\endcsname}
 \define@key{mindflow}{rightlinenumber}[true]{\csname @mindflow@rightlinenumber#1\endcsname}
-\define@key{mindflow}{twocolumn}[true]{\csname @mindflow@twocolumn#1\endcsname}
 \define@key{mindflow}{incolumn}[true]{\csname @mindflow@incolumn#1\endcsname}
 \define@key{mindflow}{linecolor}{\colorlet{mindflowLine}{#1}}
 \define@key{mindflow}{textcolor}{\colorlet{mindflowText}{#1}}
@@ -577,12 +596,6 @@
 \define@key{mindflow}{lineheight}{\setlength{\mindflowLineHeight}{#1}}
 \newcommand{\mindflowset}[1]{%
   \setkeys{mindflow}{#1}%
-  \if@mindflow@twocolumn%
-    \@mindflow@incolumntrue%
-  \fi%
-  \if@mindflow@linenumber%
-    \@mindflow@leftlinenumbertrue%
-  \fi%
 }
 
 %%================================
