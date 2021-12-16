@@ -18,7 +18,7 @@
 %<package>\NeedsTeXFormat{LaTeX2e}
 %<package>\ProvidesPackage{mindflow}
 %<*package>
-    [2021/09/15 mindflow environment]
+    [2021/12/16 mindflow environment]
 %</package>
 %
 %<*driver>
@@ -82,7 +82,7 @@
 \lstnewenvironment{code*}% 
 {\setkeys{lst}{columns=fullflexible,keepspaces=true}}{}
 \lstnewenvironment{code}% 
-{\setkeys{lst}{columns=fullflexible,keepspaces=true,numbers=left,numberstyle=\scriptsize, stepnumber=1, numbersep=5pt,lastline=263}}{}
+{\setkeys{lst}{columns=fullflexible,keepspaces=true,numbers=left,numberstyle=\scriptsize, stepnumber=1, numbersep=5pt,lastline=231}}{}
 \EnableCrossrefs
 \CodelineIndex
 \RecordChanges
@@ -393,7 +393,7 @@
 %%================================
 %% Initialization
 %%================================
-\RequirePackage{lineno}
+\RequirePackage{linenoamsmath}
 \RequirePackage{xcolor}
 
 \colorlet{mfSavedColor}{.}
@@ -597,38 +597,6 @@
 \newcommand{\mindflowset}[1]{%
   \setkeys{mindflow}{#1}%
 }
-
-%%================================
-%% lineno patch
-%%================================
-\ifdefined\linenomathpatch\else
-  \RequirePackage{amsmath}
-  \RequirePackage{etoolbox}
-  \newcommand*\linenomathpatch[1]{%
-    \cspreto{#1}{\linenomath}%
-    \cspreto{#1*}{\linenomath}%
-    \csappto{end#1}{\endlinenomath}%
-    \csappto{end#1*}{\endlinenomath}%
-  }
-  \newcommand*\linenomathpatchAMS[1]{%
-    \cspreto{#1}{\linenomathAMS}%
-    \cspreto{#1*}{\linenomathAMS}%
-    \csappto{end#1}{\endlinenomath}%
-    \csappto{end#1*}{\endlinenomath}%
-  }
-  \expandafter\ifx\linenomath\linenomathWithnumbers
-    \let\linenomathAMS\linenomathWithnumbers
-    \patchcmd\linenomathAMS{\advance\postdisplaypenalty\linenopenalty}{}{}{}
-  \else
-    \let\linenomathAMS\linenomathNonumbers
-  \fi
-  \linenomathpatch{equation}
-  \linenomathpatchAMS{gather}
-  \linenomathpatchAMS{multline}
-  \linenomathpatchAMS{align}
-  \linenomathpatchAMS{alignat}
-  \linenomathpatchAMS{flalign}
-\fi
 % \end{code}
 %
 % \Finale
