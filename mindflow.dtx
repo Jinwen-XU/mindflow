@@ -1,6 +1,6 @@
 % \iffalse meta-comment
 %
-% Copyright (C) 2021 by Jinwen XU 
+% Copyright (C) 2021-2022 by Jinwen XU 
 % -------------------------------
 % 
 % This file may be distributed and/or modified under the conditions of the LaTeX
@@ -18,7 +18,7 @@
 %<package>\NeedsTeXFormat{LaTeX2e}
 %<package>\ProvidesPackage{mindflow}
 %<*package>
-    [2021/12/16 mindflow environment]
+    [2022/01/31 The mindflow environment]
 %</package>
 %
 %<*driver>
@@ -26,18 +26,23 @@
 \usepackage{doc}
 \usepackage[a4paper,top=1.2in,bottom=1.2in,left=1.6in,right=1.2in]{geometry}
 \usepackage{titlesec}
-\titleformat{\section}{\large\scshape\centering}{\thesection.}{.5em}{}
-\titleformat{\subsection}{\large\itshape}{\thesubsection}{.5em}{}
+\titleformat{\section}{\large\scshape\centering}{\textcolor{black!55}{$\thesection$}}{.5em}{}
+\titleformat{\subsection}{\normalsize\scshape}{\textcolor{black!55}{$\thesubsection$}}{.5em}{}
+\titlespacing{\section}{0pt}{.75pc}{.5pc}
+\titlespacing{\subsection}{0pt}{.75pc}{.5pc}
 \usepackage{titling}
-\setlength{\droptitle}{-.7in}
+\setlength{\droptitle}{-.75in}
 \usepackage{enumitem}
 \setlist{noitemsep}
-\usepackage{mathpazo,newpxtext}
+\setlist[itemize,1]{label=\textcolor{black!55}{$\bullet$}}
+\usepackage{newpxtext}
 \useosf
+\usepackage{amssymb}
+\usepackage[euler-digits]{eulervm}
+% \usepackage{ebgaramond,ebgaramond-maths}
 \usepackage[symbol]{footmisc}
 \usepackage{microtype}
-\PassOptionsToPackage{mathlines}{lineno}
-\usepackage[linenumber,rightmarker]{mindflow}
+\usepackage[mathlines,linenumber,rightmarker]{mindflow}
 \usepackage{parskip}
 \usepackage{listings}
 \definecolor{maintheme}{RGB}{50,100,150}
@@ -63,7 +68,7 @@
     {linenumbers,nolinenumbers,mindflowLeft,mindflowRight,mindflowTextFont,mindflowNumFont,mindflowMarkerFont,mindflowLineHeight,setlength,colorlet,color,
     RequirePackage,SetupKeyvalOptions,DeclareBoolOption,ProcessKeyvalOptions,PassOptionsToPackage,
     PackageWarning,MessageBreak,
-    @mindflow@incolumntrue,if@mindflow@linenumber,@mindflow@leftlinenumbertrue,if@mindflow@on,if@mindflow@off,@mindflow@offfalse,if@mindflow@incolumn,if@mindflow@leftlinenumber,if@mindflow@rightlinenumber,if@mindflow@leftmarker,if@mindflow@rightmarker,if@mindflow@nonbreakable,
+    @mindflow@incolumntrue,if@mindflow@linenumber,@mindflow@leftlinenumbertrue,if@mindflow@on,if@mindflow@off,@mindflow@offfalse,if@mindflow@incolumn,if@mindflow@leftlinenumber,if@mindflow@rightlinenumber,if@mindflow@leftmarker,if@mindflow@rightmarker,if@mindflow@nonbreakable,if@mindflow@mathlines,
     mindflow@parindent,mindflow@parskip,
     ifLNturnsON,LNturnsONtrue,LNturnsONfalse,ifLineNumbers,
     mindflowset,
@@ -82,7 +87,7 @@
 \lstnewenvironment{code*}% 
 {\setkeys{lst}{columns=fullflexible,keepspaces=true}}{}
 \lstnewenvironment{code}% 
-{\setkeys{lst}{columns=fullflexible,keepspaces=true,numbers=left,numberstyle=\scriptsize, stepnumber=1, numbersep=5pt,lastline=231}}{}
+{\setkeys{lst}{columns=fullflexible,keepspaces=true,numbers=left,numberstyle=\scriptsize, stepnumber=1, numbersep=5pt,lastline=236}}{}
 \EnableCrossrefs
 \CodelineIndex
 \RecordChanges
@@ -97,25 +102,25 @@
 % \GetFileInfo{mindflow.dtx}
 %
 %
-% \title{{\normalfont\textsf{mindflow}} -- write your ideas in a clear way}
-% \author{\scshape Jinwen Xu}
-% \date{\filedate}
+% \title{{\huge\scshape\textsf{mindflow}}\\[.15\baselineskip]\itshape\large write your ideas in a clear way\smallskip}
+% \author{\scshape Jinwen XU}
+% \footnotetext{\hspace*{-1em}Corresponding to: \textsf{mindflow} \ttfamily\filedate}
+% \date{\normalsize January 2022, in Paris}
 %
 % \maketitle
 %
 % \section{Introduction}
 %
 % The \textsf{mindflow} package provides you a way to write your ideas 
-% and annotations clearly. For example, with the options
-% \verb|linenumber| and \verb|rightmarker|, you will get something like:
+% and annotations clearly. For example, with the options \verb|linenumber|
+% and \verb|rightmarker|, you will get something like this:
 % \begin{mindflow}
 %     What to write next:
 %     \begin{itemize}
 %         \item usage: the initialization, options and configuration;
-%         \item an example;
+%         \item an example maybe;
 %         \item some word on the line numbering feature;
-%         \item some internal macros;
-%         \item the complete code.
+%         \item some internal macros and the complete code.
 %     \end{itemize}
 % \end{mindflow}
 % This example only shows the default effect. You can customize it further according to the instructions in the next section.
@@ -123,7 +128,7 @@
 % \section{The usage}
 %
 % \subsection{How to load it\,?}
-% Simply load the package with 
+% Simply load the package with
 % \iffalse
 %<*example>
 % \fi
@@ -134,21 +139,24 @@
 %</example>
 % \fi
 %
-% By default, the environment has no line numbers or markers. You can use the
-% following options (they can be specified directly, like \verb|off|, or as a
-% boolean optional, like \verb|off=false|):
+% By default, there are no decorations like line numbers or markers. To enable 
+% them, you can use the following options (they can be specified directly, like 
+% \verb|off|, or as a boolean optional, like \verb|off=false|):
 %
+% \begin{center}
 % \begin{tabular}{ll}
-%     \verb|linenumber|\hspace{5em} & Same as \verb|leftlinenumber|\\
+%     \verb|linenumber|\hspace{5em} & Enable line numbering feature, same as \verb|leftlinenumber|\\
+%     \verb|mathlines| & Enable line numbers for displayed equations\\
 %     \verb|leftlinenumber| & Enable left line numbers\\
 %     \verb|rightlinenumber| & Enable right line numbers\\
-%     \verb|leftmarker| & Enable left marker, by default it is a ``\verb|*|''\\
-%     \verb|rightmarker| & Enable right marker, by default it is a ``\verb|*|''\\
+%     \verb|leftmarker| & Enable left marker, by default it is an asterisk ``\verb|*|''\\
+%     \verb|rightmarker| & Enable right marker, by default it is an asterisk ``\verb|*|''\\
 %     \verb|incolumn| & The separation line would fit in the column \\&(\emph{automatically applied in two-column documents})\\
 %     \verb|off|, \verb|on| & Turn the \verb|mindflow| environments \emph{off} or \emph{on}
 % \end{tabular}
+% \end{center}
 %
-% Additionally, there is an option \verb|nonbreakble|, which enables the \textsf{tcolorbox} version, permits a background color, but is not breakable and doesn't support line numbering quite well.
+% There is also an option \verb|nonbreakable|, which enables the \textsf{tcolorbox} version, permitting a background color, but is not breakable and does not support line numbering quite well.
 %
 % \subsection{How to use it\,?}
 % \DescribeEnv{\{mindflow\}}
@@ -165,11 +173,13 @@
 %</example>
 % \fi
 %
-% \subsection{Further configuration}
+% \subsection{Further configurations}
 %
 % \DescribeMacro{\mindflowset}
 % You can use \lstinline|\mindflowset{|\meta{configuration}\lstinline|}| to
-% configure the \texttt{mindflow} environment. The available keys are listed at the top of the next page.
+% further configure the \texttt{mindflow} environment. The available keys are
+% listed at the top of the next page.
+% \clearpage
 %
 % \begin{center}
 % \begin{tabular}{ll|ll}
@@ -181,10 +191,10 @@
 %     \verb|linecolor| & Color of the separation line & \verb|lineheight| & Height of the separation line\\
 %	  \hline
 % \end{tabular}
-%\end{center}
+% \end{center}
 %
-% Additionally, all the options mentioned in the previous section (except for \verb|nonbreakble|) can be set with \lstinline|\mindflowset|.%
-% \footnote{If the package option \texttt{nonbreakble} is enabled, then there is also a key \texttt{backgroundcolor}, similar to \texttt{textcolor}, for configuring the background color of the \texttt{mindflow} environments.}
+% Additionally, most of the options mentioned in the previous section (except for \verb|nonbreakable| and \verb|mathlines|) can be set with \lstinline|\mindflowset|.%
+% \footnote{If the package option \texttt{nonbreakable} is enabled, then there is also a key \texttt{backgroundcolor}, similar to \texttt{textcolor}, for configuring the background color of the \texttt{mindflow} environments.}
 %
 % \section{An example}
 % With the following settings:
@@ -210,7 +220,7 @@
 %</example>
 % \fi
 % \vspace{-.5\baselineskip}
-% One will have something like this:
+% One will get something like this (a little bit exaggerated, to be honest):
 % \begingroup
 % \makeatletter
 % \@mindflow@leftmarkertrue
@@ -249,40 +259,29 @@
 %
 % \nolinenumbers
 %
-% The line numbering feature is provided by the package \textsf{lineno}. For
-% more details, please refer to its documentation. Notice that, by default,
-% displayed equations are not numbered. You can add the following line before
-% \lstinline|\usepackage{mindflow}|:
-% \iffalse
-%<*example>
-% \fi
-\begin{code*}
-\PassOptionsToPackage{mathlines}{lineno}
-\end{code*}
-% \iffalse
-%</example>
-% \fi
-% \vspace{-.5\baselineskip}
-% to enable the line numbers for displayed equations.
+% The line numbering feature is provided by package \textsf{lineno}. For
+% more details, please refer to its documentation. Notice that
+% displayed equations are not numbered by default. To enable the line numbers for them, you can use the option \verb|mathlines|. The result would be like:
 %
 % \begin{mindflow}\vspace{-\baselineskip}
 % \begin{align*}
-%     (a + b)^2  &= a^2 + 2ab + b^2\\
-%     (a + b)^3  &= a^3 + 3a^2b + 3ab^2 + b^3
+%     \sum_{i_1 < \cdots < i_n} \prod_{1 \leqslant j \leqslant n} i_j^{-2}  &= \frac{\pi^{2n}}{(2n+1)!}\\
+%     \implies \frac{e^{\pi}-e^{-\pi}}{2\pi} &= 1+ \sum_{n \geqslant 1} \sum_{i_1 < \cdots < i_n} \prod_{1 \leqslant j \leqslant n} i_j^{-2}
 % \end{align*}
 % \end{mindflow}
-% \smallskip
 %
 % \clearpage
+% {\color{black!55}
 % \makebox[\linewidth]{\rule{4\paperwidth}{\mindflowLineHeight}}%
 % \centerline{\itshape ---~~Readers who are not interested in technical details can skip the rest~~---}
 %
 % \vspace{-\baselineskip}
 % \makebox[\linewidth]{\rule{4\paperwidth}{\mindflowLineHeight}}%
+% }
 %
 % \section{Some \TeX{}nical details}
 %
-% \subsection{Internal macro for text elements}
+% \subsection{Internal macros for text elements}
 % \DescribeMacro{\mindflowTextFont}
 % \DescribeMacro{\mindflowNumFont}
 % \DescribeMacro{\mindflowMarkerFont}
@@ -313,7 +312,7 @@
 % The height of the separation lines is a length macro named \lstinline|\mindflowLineHeight|, 
 % with default value \verb|0.4pt|. You can change this with \lstinline|\setlength|.
 %
-% \subsection{Internal name of the colors}
+% \subsection{Internal names of the colors}
 % \DescribeMacro{mindflowLine}
 % \DescribeMacro{mindflowText}
 % \DescribeMacro{mindflowNum}
@@ -328,7 +327,7 @@
 % \DescribeMacro{*mindflowBackground}
 % If the package option \verb|nonbreakable| is enabled, then there is also the background color \verb|mindflowBackground|, which by default is white.
 %
-% \section{The same example}
+% \section{The same example revisited}
 % With option \verb|leftlinenumber, rightlinenumber, leftmarker, rightmarker| 
 % and the following settings:
 % \iffalse
@@ -356,7 +355,7 @@
 % 
 % \begin{itemize}
 %     \item There is no absolute guarantee that the separation lines will not fall alone at the top or bottom of the page, though great effort has been made to reduce the occurrence of such situation.
-%     \item The \textsf{nonbreakable} version doesn't support line numbering quite well, especially for displayed equations. This is due to the usage of \verb|internallinenumbers|.
+%     \item The \texttt{nonbreakable} version does not support line numbering quite well, especially for displayed equations. This is due to the usage of \verb|internallinenumbers|.
 % \end{itemize}
 %
 % \StopEventually{}
@@ -380,6 +379,7 @@
 \DeclareBoolOption[false]{rightlinenumber} % Right line numbers
 \DeclareBoolOption[false]{incolumn}        % Separation line fits in column
 \DeclareBoolOption[false]{nonbreakable}    % Use the tcolorbox version
+\DeclareBoolOption[false]{mathlines}       % Add line numbers to equations
 
 \ProcessKeyvalOptions*\relax
 
@@ -388,6 +388,9 @@
 \fi
 \if@mindflow@linenumber
   \@mindflow@leftlinenumbertrue
+\fi
+\if@mindflow@mathlines
+  \PassOptionsToPackage{mathlines}{lineno}
 \fi
 
 %%================================
@@ -594,6 +597,7 @@
 \define@key{mindflow}{left}{\renewcommand{\mindflowLeft}{#1}}
 \define@key{mindflow}{right}{\renewcommand{\mindflowRight}{#1}}
 \define@key{mindflow}{lineheight}{\setlength{\mindflowLineHeight}{#1}}
+
 \newcommand{\mindflowset}[1]{%
   \setkeys{mindflow}{#1}%
 }
