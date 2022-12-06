@@ -18,7 +18,7 @@
 %<package>\NeedsTeXFormat{LaTeX2e}
 %<package>\ProvidesPackage{mindflow}
 %<*package>
-    [2022/01/31 The mindflow environment]
+    [2022/12/06 The mindflow environment]
 %</package>
 %
 %<*driver>
@@ -37,7 +37,7 @@
 \setlist[itemize,1]{label=\textcolor{black!55}{$\bullet$}}
 \usepackage{newpxtext}
 \useosf
-\usepackage{amssymb}
+\usepackage{mathtools,amssymb}
 \usepackage[euler-digits]{eulervm}
 % \usepackage{ebgaramond,ebgaramond-maths}
 \usepackage[symbol]{footmisc}
@@ -79,14 +79,13 @@
     if@twocolumn,
     ifICturnsON,ICturnsONtrue,ICturnsONfalse,AutoIncolumn,ResumeIncolumn,
     newtcolorbox,
-    ifdefined,linenomathpatch,cspreto,csappto,patchcmd,linenomathpatchAMS,linenomathAMS,linenomathWithnumbers,linenomath,endlinenomath,linenomathNonumbers,linenopenalty,
     define@key,setkeys,
     nowidow,
     }
 }
 \lstnewenvironment{code*}% 
 {\setkeys{lst}{columns=fullflexible,keepspaces=true}}{}
-\lstnewenvironment{code}% 
+\lstnewenvironment{code-with-linenumber}% 
 {\setkeys{lst}{columns=fullflexible,keepspaces=true,numbers=left,numberstyle=\scriptsize, stepnumber=1, numbersep=5pt,lastline=236}}{}
 \EnableCrossrefs
 \CodelineIndex
@@ -105,7 +104,7 @@
 % \title{{\huge\scshape\textsf{mindflow}}\\[.15\baselineskip]\itshape\large write your ideas in a clear way\smallskip}
 % \author{\scshape Jinwen XU}
 % \footnotetext{\hspace*{-1em}Corresponding to: \textsf{mindflow} \ttfamily\filedate}
-% \date{\normalsize January 2022, in Paris}
+% \date{\normalsize December 2022, in Paris}
 %
 % \maketitle
 %
@@ -364,7 +363,7 @@
 % \section{Implementation}
 % Below is the complete source code of this package.
 %
-% \begin{code}
+% \begin{code-with-linenumber}
 \RequirePackage{kvoptions}
 \SetupKeyvalOptions{%
     family = @mindflow,
@@ -396,7 +395,7 @@
 %%================================
 %% Initialization
 %%================================
-\RequirePackage{linenoamsmath}
+\RequirePackage{lineno}
 \RequirePackage{xcolor}
 
 \colorlet{mfSavedColor}{.}
@@ -601,7 +600,7 @@
 \newcommand{\mindflowset}[1]{%
   \setkeys{mindflow}{#1}%
 }
-% \end{code}
+% \end{code-with-linenumber}
 %
 % \Finale
 \endinput
