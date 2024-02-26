@@ -8,6 +8,8 @@ More specifically, it provides a LaTeX environment with its own line numbers or 
 
 For more information, please refer to its documentation.
 
+> Package dependencies: [`kvoptions`](https://ctan.org/pkg/kvoptions), [`lineno`](https://ctan.org/pkg/lineno), [`nowidow`](https://ctan.org/pkg/nowidow), [*`tcolorbox`*](https://ctan.org/pkg/tcolorbox), [`verbatim`](https://ctan.org/pkg/verbatim), [`xcolor`](https://ctan.org/pkg/xcolor).
+
 # License
 
 This work is released under the LaTeX Project Public License, v1.3c or later.
